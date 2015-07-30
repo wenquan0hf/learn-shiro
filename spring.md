@@ -1,4 +1,4 @@
-# 12. 与Spring集成
+# 与 Spring集成
 
 Shiro 的组件都是 JavaBean/POJO 式的组件，所以非常容易使用 Spring 进行组件管理，可以非常方便的从 ini 配置迁移到 Spring 进行管理，且支持 JavaSE 应用及 Web 应用的集成。  
  
@@ -199,7 +199,7 @@ org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor
 </bean>&nbsp;
 ```
 
-如上配置用于开启 Shiro Spring AOP 权限注解的支持；<aop:config proxy-target-class="true"> 表示代理类。  
+如上配置用于开启 Shiro Spring AOP 权限注解的支持；`<aop:config proxy-target-class="true">` 表示代理类。  
 
 接着就可以在相应的控制器（AnnotationController）中使用如下方式进行注解：  
 
@@ -233,7 +233,7 @@ public ModelAndView processUnauthenticatedException(NativeWebRequest request, Un
 
 `@RequiresAuthentication`
 
-表示当前 Subject 已经通过 login 进行了身份验证；即 Subject. isAuthenticated() 返回 true。  
+表示当前 Subject 已经通过 login 进行了身份验证；即 Subject.isAuthenticated() 返回 true。  
 
 `@RequiresUser`  
 

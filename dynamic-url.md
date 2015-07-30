@@ -1,4 +1,4 @@
-# 19. 动态 URL 权限控制
+# 动态 URL 权限控制
 
 用过 Spring Security 的朋友应该比较熟悉对 URL 进行全局的权限控制，即访问 URL 时进行权限匹配；如果没有权限直接跳到相应的错误页面。Shiro 也支持类似的机制，不过需要稍微改造下来满足实际需求。不过在 Shiro 中，更多的是通过 AOP 进行分散的权限控制，即方法级别的；而通过 URL 进行权限控制是一种集中的权限控制。本章将介绍如何在 Shiro 中完成动态 URL 权限控制。
  
@@ -105,16 +105,18 @@ public class ShiroFilerChainManager {
 
 拦截器及拦截器链知识请参考《第八章 拦截器机制》，此处再介绍下 Shiro 拦截器的流程：  
 
-AbstractShiroFilter // 如 ShiroFilter/ SpringShiroFilter 都继承该 Filter
-doFilter //Filter 的 doFilter
-doFilterInternal // 转调 doFilterInternal
-executeChain(request, response, chain) // 执行拦截器链    
-FilterChain chain = getExecutionChain(request, response, origChain) // 使用原始拦截器链获取新的拦截器链  
-chain.doFilter(request, response) // 执行新组装的拦截器链  
+```
+AbstractShiroFilter //如ShiroFilter/ SpringShiroFilter都继承该Filter
+   doFilter //Filter的doFilter
+     doFilterInternal //转调doFilterInternal
+       executeChain(request, response, chain) //执行拦截器链
+         FilterChain chain = getExecutionChain(request, response, origChain) //使用原始拦截器链获取新的拦截器链
+           chain.doFilter(request, response) //执行新组装的拦截器链
  
-getExecutionChain(request, response, origChain) // 获取拦截器链流程  
-FilterChainResolver resolver = getFilterChainResolver(); // 获取相应的   FilterChainResolver
-FilterChain resolved = resolver.getChain(request, response, origChain); // 通过 FilterChainResolver 根据当前请求解析到新的 FilterChain 拦截器链  
+getExecutionChain(request, response, origChain) //获取拦截器链流程
+       FilterChainResolver resolver = getFilterChainResolver(); //获取相应的FilterChainResolver
+       FilterChain resolved = resolver.getChain(request, response, origChain); //通过FilterChainResolver根据当前请求解析到新的FilterChain拦截器链
+```
  
 默认情况下如使用 ShiroFilterFactoryBean 创建 shiroFilter 时，默认使用 PathMatchingFilterChainResolver 进行解析，而它默认是根据当前请求的 URL 获取相应的拦截器链，使用 Ant 模式进行 URL 匹配；默认使用 DefaultFilterChainManager 进行拦截器链的管理。
  
@@ -400,8 +402,8 @@ shiroFilter 不再定义 filters 及 filterChainDefinitions，而是交给了 fi
  
 ![](images/29.png)
 
-3、访问 http://localhost:8080/chapter19/user 时要求用户拥有 aa 角色，此时是没有的所以会跳转到未授权页面；  
-4、添加 aa 角色然后授权给用户，此时就有权限访问 http://localhost:8080/chapter19/user。
+3、访问 `http://localhost:8080/chapter19/user` 时要求用户拥有 aa 角色，此时是没有的所以会跳转到未授权页面；  
+4、添加 aa 角色然后授权给用户，此时就有权限访问 `http://localhost:8080/chapter19/user`。
  
 实际项目可以在此基础上进行扩展。
 

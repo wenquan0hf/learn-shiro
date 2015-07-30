@@ -1,4 +1,4 @@
-# 13. RememberMe  
+# RememberMe  
 
 Shiro 提供了记住我（RememberMe）的功能，比如访问如淘宝等一些网站时，关闭了浏览器下次再打开时还是能记住你是谁，下次访问时无需再登录即可访问，基本流程如下：
 
@@ -24,8 +24,8 @@ Shiro 提供了记住我（RememberMe）的功能，比如访问如淘宝等一�
 </bean>&nbsp;
 ```
 
-sessionIdCookie：maxAge=-1 表示浏览器关闭时失效此 Cookie；  
-rememberMeCookie：即记住我的 Cookie，保存时长 30 天；  
+- sessionIdCookie：maxAge=-1 表示浏览器关闭时失效此 Cookie；  
+- rememberMeCookie：即记住我的 Cookie，保存时长 30 天；  
 
 ```
 `<!-- rememberMe管理器 -->`
@@ -77,10 +77,10 @@ rememberMeParam，即 rememberMe 请求参数名，请求参数是 boolean 类�
 
 **测试**：  
 
-1. 访问 http://localhost:8080/chapter13/，会跳转到登录页面，登录成功后会设置会话及 rememberMe Cookie；
+1. 访问 `http://localhost:8080/chapter13/`，会跳转到登录页面，登录成功后会设置会话及 rememberMe Cookie；
 2. 关闭浏览器，此时会话 cookie 将失效；
-3. 然后重新打开浏览器访问 http://localhost:8080/chapter13/，还是可以访问的；
-4. 如果此时访问 http://localhost:8080/chapter13/authenticated.jsp，会跳转到登录页面重新进行身份验证。  
+3. 然后重新打开浏览器访问 `http://localhost:8080/chapter13/`，还是可以访问的；
+4. 如果此时访问 `http://localhost:8080/chapter13/authenticated.jsp`，会跳转到登录页面重新进行身份验证。  
 
 如果要自己做 RememeberMe，需要在登录之前这样创建 Token：UsernamePasswordToken(用户名，密码，是否记住我)，如：  
 

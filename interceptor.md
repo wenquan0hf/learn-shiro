@@ -1,6 +1,6 @@
-# 8. 拦截器机制
+# 拦截器机制
 
-## 8.1 拦截器介绍  
+## 拦截器介绍  
 
 Shiro 使用了与 Servlet 一样的 Filter 接口进行扩展；所以如果对 Filter 不熟悉可以参考《Servlet 3.1 规范》[http://www.iteye.com/blogs/subjects/Servlet-3-1](http://www.iteye.com/blogs/subjects/Servlet-3-1)了解 Filter 的工作原理。首先下图是 Shiro 拦截器的基础类图：  
 
@@ -24,10 +24,9 @@ void postHandle(ServletRequest request, ServletResponse response) throws Excepti
 void afterCompletion(ServletRequest request, ServletResponse response, Exception exception) throws Exception;&nbsp;
 ```
 
-preHandler：类似于 AOP 中的前置增强；在拦截器链执行之前执行；如果返回 true 则继续拦截器链；否则中断后续的拦截器链的执行直接返回；进行预处理（如基于表单的身份验证、授权）
-postHandle：类似于 AOP 中的后置返回增强；在拦截器链执行完成后执行；进行后处理（如记录执行时间之类的）；  
-
-afterCompletion：类似于 AOP 中的后置最终增强；即不管有没有异常都会执行；可以进行清理资源（如接触 Subject 与线程的绑定之类的）；
+- preHandler：类似于 AOP 中的前置增强；在拦截器链执行之前执行；如果返回 true 则继续拦截器链；否则中断后续的拦截器链的执行直接返回；进行预处理（如基于表单的身份验证、授权）
+- postHandle：类似于 AOP 中的后置返回增强；在拦截器链执行完成后执行；进行后处理（如记录执行时间之类的）；  
+- afterCompletion：类似于 AOP 中的后置最终增强；即不管有没有异常都会执行；可以进行清理资源（如接触 Subject 与线程的绑定之类的）；
 
 **5、PathMatchingFilter**  
 
@@ -79,7 +78,7 @@ void redirectToLogin(ServletRequest request, ServletResponse response) //重定�
  
 到此基本的拦截器就完事了，如果我们想进行访问访问的控制就可以继承 AccessControlFilter；如果我们要添加一些通用数据我们可以直接继承 PathMatchingFilter。  
 
-## 8.2 拦截器链  
+## 拦截器链  
 
 Shiro 对 Servlet 容器的 FilterChain 进行了代理，即 ShiroFilter 在继续 Servlet 容器的 Filter 链的执行之前，通过 ProxiedFilterChain 对 Servlet 容器的 FilterChain 进行了代理；即先走 Shiro 自己的 Filter 体系，然后才会委托给 Servlet 容器的 FilterChain 进行 Servlet 容器级别的 Filter 链执行；Shiro 的 ProxiedFilterChain 执行流程：1、先执行 Shiro 自己的 Filter 链；2、再执行 Servlet 容器的 Filter 链（即原始的 Filter）。  
 
@@ -164,7 +163,7 @@ return filterChainResolver;&nbsp;
 </context-param>&nbsp;
 ```
 
-## 8.3 自定义拦截器  
+## 自定义拦截器  
 
 通过自定义自己的拦截器可以扩展一些功能，诸如动态 url -角色/权限访问控制的实现、根据 Subject 身份信息获取用户信息绑定到 Request（即设置通用数据）、验证码验证、在线用户信息的保存等等，因为其本质就是一个 Filter；所以 Filter 能做的它就能做。
  
@@ -221,9 +220,9 @@ public class MyAdviceFilter extends AdviceFilter {
 }&nbsp;
 ```
 
-preHandle：进行请求的预处理，然后根据返回值决定是否继续处理（true：继续过滤器链）；可以通过它实现权限控制；  
-postHandle：执行完拦截器链之后正常返回后执行；  
-afterCompletion：不管最后有没有异常，afterCompletion 都会执行，完成如清理资源功能。  
+- preHandle：进行请求的预处理，然后根据返回值决定是否继续处理（true：继续过滤器链）；可以通过它实现权限控制；  
+- postHandle：执行完拦截器链之后正常返回后执行；  
+- afterCompletion：不管最后有没有异常，afterCompletion 都会执行，完成如清理资源功能。  
  
 然后在 shiro.ini 中进行如下配置：  
 
@@ -251,8 +250,8 @@ public class MyPathMatchingFilter extends PathMatchingFilter {
 }&nbsp;
 ```
 
-preHandle：会进行 url 模式与请求 url 进行匹配，如果匹配会调用 onPreHandle；如果没有配置 url 模式 / 没有 url 模式匹配，默认直接返回 true；  
-onPreHandle：如果 url 模式与请求 url 匹配，那么会执行 onPreHandle，并把该拦截器配置的参数传入。默认什么不处理直接返回 true。  
+- preHandle：会进行 url 模式与请求 url 进行匹配，如果匹配会调用 onPreHandle；如果没有配置 url 模式 / 没有 url 模式匹配，默认直接返回 true；  
+- onPreHandle：如果 url 模式与请求 url 匹配，那么会执行 onPreHandle，并把该拦截器配置的参数传入。默认什么不处理直接返回 true。  
  
 然后在 shiro.ini 中进行如下配置：
 
@@ -263,7 +262,7 @@ myFilter3=com.github.zhangkaitao.shiro.chapter8.web.filter.MyPathMatchingFilter
 /**= myFilter3[config]&nbsp;
 ```
 
-/** 就是注册给 PathMatchingFilter 的 url 模式，config 就是拦截器的配置参数，多个之间逗号分隔，onPreHandle 使用 mappedValue 接收参数值。  
+`/**` 就是注册给 PathMatchingFilter 的 url 模式，config 就是拦截器的配置参数，多个之间逗号分隔，onPreHandle 使用 mappedValue 接收参数值。  
 
 **4、扩展 AccessControlFilter**  
 
@@ -364,7 +363,7 @@ formLogin=com.github.zhangkaitao.shiro.chapter8.web.filter.FormLoginFilter
 /login.jsp=formLogin&nbsp;
 ```
 
-启动服务器输入 http://localhost:8080/chapter8/test.jsp 测试时，会自动跳转到登录页面，登录成功后又会跳回到 test.jsp 页面。  
+启动服务器输入 `http://localhost:8080/chapter8/test.jsp` 测试时，会自动跳转到登录页面，登录成功后又会跳回到 test.jsp 页面。  
  
 此处可以通过继承 AuthenticatingFilter 实现，其提供了很多登录相关的基础代码。另外可以参考 Shiro 内嵌的 FormAuthenticationFilter 的源码，思路是一样的。  
 
@@ -424,185 +423,185 @@ anyRoles=com.github.zhangkaitao.shiro.chapter8.web.filter.AnyRolesFilter
 
 此处可以继承 AuthorizationFilter 实现，其提供了授权相关的基础代码。另外可以参考 Shiro 内嵌的 RolesAuthorizationFilter 的源码，只是实现 hasAllRoles 逻辑。  
 
-## 8.4 默认拦截器  
+## 默认拦截器  
 
 Shiro 内置了很多默认的拦截器，比如身份验证、授权等相关的。默认拦截器可以参考   org.apache.shiro.web.filter.mgt.DefaultFilter 中的枚举拦截器：  
 
-<table cellspacing="0" style="border-collapse: collapse; border: 1px none; width: 100%; table-layout: fixed;" cellpadding="0" border="1" class="aa">
+<table>
 <tbody><tr>
-<td style="padding: 0cm 5.4pt 0cm 5.4pt; width: 150px;">
-<p class="MsoNormal">默认拦截器名</p>
+<td>
+<p>默认拦截器名</p>
 </td>
-<td style="border-left: none; padding: 0cm 5.4pt 0cm 5.4pt; width: 215px;">
-<p class="MsoNormal">拦截器类</p>
+<td>
+<p>拦截器类</p>
 </td>
-<td style="border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">说明（括号里的表示默认值）</p>
-</td>
-</tr>
-<tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal"><strong>身份验证相关的</strong></p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">&nbsp;</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">&nbsp;</p>
+<td>
+<p>说明（括号里的表示默认值）</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">authc</p>
+<td>
+<p>身份验证相关的</strong></p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authc</p>
-<p class="MsoNormal">.FormAuthenticationFilter</p>
+<td>
+<p>&nbsp;</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">基于表单的拦截器；如 “/**=authc”，如果没有登录会跳到相应的登录页面登录；主要属性：usernameParam：表单提交的用户名参数名（ username）； &nbsp;passwordParam：表单提交的密码参数名（password）； rememberMeParam：表单提交的密码参数名（rememberMe）；&nbsp; loginUrl：登录页面地址（/login.jsp）；successUrl：登录成功后的默认重定向地址； failureKeyAttribute：登录失败后错误信息存储 key（shiroLoginFailure）；</p>
-</td>
-</tr>
-<tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">authcBasic</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authc</p>
-<p class="MsoNormal">.BasicHttpAuthenticationFilter</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">Basic HTTP 身份验证拦截器，主要属性： applicationName：弹出登录框显示的信息（application）；</p>
+<td>
+<p>&nbsp;</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">logout</p>
+<td>
+<p>authc</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authc</p>
-<p class="MsoNormal">.LogoutFilter</p>
+<td>
+<p>org.apache.shiro.web.filter.authc</p>
+<p>.FormAuthenticationFilter</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">退出拦截器，主要属性：redirectUrl：退出成功后重定向的地址（/）; 示例 “/logout=logout”</p>
-</td>
-</tr>
-<tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">user</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authc</p>
-<p class="MsoNormal">.UserFilter</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">用户拦截器，用户已经身份验证 / 记住我登录的都可；示例 “/**=user”</p>
+<td>
+<p>基于表单的拦截器；如 “`/**=authc`”，如果没有登录会跳到相应的登录页面登录；主要属性：usernameParam：表单提交的用户名参数名（ username）； &nbsp;passwordParam：表单提交的密码参数名（password）； rememberMeParam：表单提交的密码参数名（rememberMe）；&nbsp; loginUrl：登录页面地址（/login.jsp）；successUrl：登录成功后的默认重定向地址； failureKeyAttribute：登录失败后错误信息存储 key（shiroLoginFailure）；</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">anon</p>
+<td>
+<p>authcBasic</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authc</p>
-<p class="MsoNormal">.AnonymousFilter</p>
+<td>
+<p>org.apache.shiro.web.filter.authc</p>
+<p>.BasicHttpAuthenticationFilter</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">匿名拦截器，即不需要登录即可访问；一般用于静态资源过滤；示例 “/static/**=anon”</p>
-</td>
-</tr>
-<tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal"><strong>授权相关的</strong></p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">&nbsp;</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">&nbsp;</p>
+<td>
+<p>Basic HTTP 身份验证拦截器，主要属性： applicationName：弹出登录框显示的信息（application）；</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">roles</p>
+<td>
+<p>logout</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authz</p>
-<p class="MsoNormal">.RolesAuthorizationFilter</p>
+<td>
+<p>org.apache.shiro.web.filter.authc</p>
+<p>.LogoutFilter</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">角色授权拦截器，验证用户是否拥有所有角色；主要属性： loginUrl：登录页面地址（/login.jsp）；unauthorizedUrl：未授权后重定向的地址；示例 “/admin/**=roles[admin]”</p>
-</td>
-</tr>
-<tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">perms</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authz</p>
-<p class="MsoNormal">.PermissionsAuthorizationFilter</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">权限授权拦截器，验证用户是否拥有所有权限；属性和 roles 一样；示例 “/user/**=perms["user:create"]”</p>
+<td>
+<p>退出拦截器，主要属性：redirectUrl：退出成功后重定向的地址（/）; 示例 “/logout=logout”</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">port</p>
+<td>
+<p>user</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authz</p>
-<p class="MsoNormal">.PortFilter</p>
+<td>
+<p>org.apache.shiro.web.filter.authc</p>
+<p>.UserFilter</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">端口拦截器，主要属性：port（80）：可以通过的端口；示例 “/test= port[80]”，如果用户访问该页面是非 80，将自动将请求端口改为 80 并重定向到该 80 端口，其他路径 / 参数等都一样</p>
-</td>
-</tr>
-<tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">rest</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authz</p>
-<p class="MsoNormal">.HttpMethodPermissionFilter</p>
-</td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">rest 风格拦截器，自动根据请求方法构建权限字符串（GET=read, POST=create,PUT=update,DELETE=delete,HEAD=read,TRACE=read,OPTIONS=read, MKCOL=create）构建权限字符串；示例 “/users=rest[user]”，会自动拼出“user:read,user:create,user:update,user:delete” 权限字符串进行权限匹配（所有都得匹配，isPermittedAll）；</p>
+<td>
+<p>用户拦截器，用户已经身份验证 / 记住我登录的都可；示例 “/**=user”</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">ssl</p>
+<td>
+<p>anon</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.authz</p>
-<p class="MsoNormal">.SslFilter</p>
+<td>
+<p>org.apache.shiro.web.filter.authc</p>
+<p>.AnonymousFilter</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">SSL 拦截器，只有请求协议是 https 才能通过；否则自动跳转会 https 端口（443）；其他和 port 拦截器一样；</p>
+<td>
+<p>匿名拦截器，即不需要登录即可访问；一般用于静态资源过滤；示例 “/static/**=anon”</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
+<td>
+<p><strong>授权相关的</strong></p>
+</td>
+<td>
+<p>&nbsp;</p>
+</td>
+<td>
+<p>&nbsp;</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>roles</p>
+</td>
+<td>
+<p>org.apache.shiro.web.filter.authz</p>
+<p>.RolesAuthorizationFilter</p>
+</td>
+<td>
+<p>角色授权拦截器，验证用户是否拥有所有角色；主要属性： loginUrl：登录页面地址（/login.jsp）；unauthorizedUrl：未授权后重定向的地址；示例 “/admin/**=roles[admin]”</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>perms</p>
+</td>
+<td>
+<p>org.apache.shiro.web.filter.authz</p>
+<p>.PermissionsAuthorizationFilter</p>
+</td>
+<td>
+<p>权限授权拦截器，验证用户是否拥有所有权限；属性和 roles 一样；示例 “/user/**=perms["user:create"]”</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>port</p>
+</td>
+<td>
+<p>org.apache.shiro.web.filter.authz</p>
+<p>.PortFilter</p>
+</td>
+<td>
+<p>端口拦截器，主要属性：port（80）：可以通过的端口；示例 “/test= port[80]”，如果用户访问该页面是非 80，将自动将请求端口改为 80 并重定向到该 80 端口，其他路径 / 参数等都一样</p>
+</td>
+</tr>
+<tr>
+<td>
+<p>rest</p>
+</td>
+<td>
+<p>org.apache.shiro.web.filter.authz</p>
+<p>.HttpMethodPermissionFilter</p>
+</td>
+<td>
+<p>rest 风格拦截器，自动根据请求方法构建权限字符串（GET=read, POST=create,PUT=update,DELETE=delete,HEAD=read,TRACE=read,OPTIONS=read, MKCOL=create）构建权限字符串；示例 “/users=rest[user]”，会自动拼出“user:read,user:create,user:update,user:delete” 权限字符串进行权限匹配（所有都得匹配，isPermittedAll）；</p>
+</td>
+</tr>
+<tr>
+<td>
+<p">ssl</p>
+</td>
+<td>
+<p>org.apache.shiro.web.filter.authz</p>
+<p>.SslFilter</p>
+</td>
+<td>
+<p>SSL 拦截器，只有请求协议是 https 才能通过；否则自动跳转会 https 端口（443）；其他和 port 拦截器一样；</p>
+</td>
+</tr>
+<tr>
+<td>
 <p class="MsoNormal"><strong>其他</strong></p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">&nbsp;</p>
+<td>
+<p>&nbsp;</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">&nbsp;</p>
+<td>
+<p>&nbsp;</p>
 </td>
 </tr>
 <tr>
-<td style="border-top: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">noSessionCreation</p>
+<td>
+<p>noSessionCreation</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">org.apache.shiro.web.filter.session</p>
-<p class="MsoNormal">.NoSessionCreationFilter</p>
+<td>
+<p>org.apache.shiro.web.filter.session</p>
+<p>.NoSessionCreationFilter</p>
 </td>
-<td style="border-top: none; border-left: none; padding: 0cm 5.4pt 0cm 5.4pt;">
-<p class="MsoNormal">不创建会话拦截器，调用 subject.getSession(false) 不会有什么问题，但是如果 subject.getSession(true) 将抛出 DisabledSessionException 异常；</p>
+<td>
+<p>不创建会话拦截器，调用 subject.getSession(false) 不会有什么问题，但是如果 subject.getSession(true) 将抛出 DisabledSessionException 异常；</p>
 </td>
 </tr>
 </tbody></table>
@@ -617,7 +616,7 @@ Shiro 内置了很多默认的拦截器，比如身份验证、授权等相关�
 
 `perms.enabled=false`
 
-示例源代码：[https://github.com/zhangkaitao/shiro-example]()；可加群 134755960 探讨 Spring/Shiro 技术。
+示例源代码：[https://github.com/zhangkaitao/shiro-example]()
 
 
 

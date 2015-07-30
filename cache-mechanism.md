@@ -1,4 +1,4 @@
-# 11. 缓存机制
+# 缓存机制
 
 Shiro 提供了类似于 Spring 的 Cache 抽象，即 Shiro 本身不实现 Cache，但是对 Cache 进行了又抽象，方便更换不同的底层 Cache 实现。对于 Cache 的一些概念可以参考我的《Spring Cache 抽象详解》：[http://jinnianshilongnian.iteye.com/blog/2001040](http://jinnianshilongnian.iteye.com/blog/2001040)。  
 
@@ -65,12 +65,12 @@ cacheManager.cacheManagerConfigFile=classpath:shiro-ehcache.xml
 securityManager.cacheManager=$cacheManager&nbsp;
 ```
 
-userRealm.cachingEnabled：启用缓存，默认 false；  
-userRealm.authenticationCachingEnabled：启用身份验证缓存，即缓存 AuthenticationInfo 信息，默认 false；  
-userRealm.authenticationCacheName：缓存 AuthenticationInfo 信息的缓存名称；  
-userRealm. authorizationCachingEnabled：启用授权缓存，即缓存 AuthorizationInfo 信息，默认 false；  
-userRealm. authorizationCacheName：缓存 AuthorizationInfo 信息的缓存名称；  
-cacheManager：缓存管理器，此处使用 EhCacheManager，即 Ehcache 实现，需要导入相应的 Ehcache 依赖，请参考 pom.xml；  
+- userRealm.cachingEnabled：启用缓存，默认 false；  
+- userRealm.authenticationCachingEnabled：启用身份验证缓存，即缓存 AuthenticationInfo 信息，默认 false；  
+- userRealm.authenticationCacheName：缓存 AuthenticationInfo 信息的缓存名称；  
+- userRealm. authorizationCachingEnabled：启用授权缓存，即缓存 AuthorizationInfo 信息，默认 false；  
+- userRealm. authorizationCacheName：缓存 AuthorizationInfo 信息的缓存名称；  
+- cacheManager：缓存管理器，此处使用 EhCacheManager，即 Ehcache 实现，需要导入相应的 Ehcache 依赖，请参考 pom.xml；  
 
 因为测试用例的关系，需要将 Ehcache 的 CacheManager 改为使用 VM 单例模式：
 this.manager = new net.sf.ehcache.CacheManager(getCacheManagerConfigFileInputStream())；
@@ -112,8 +112,7 @@ public void testClearCachedAuthorizationInfo() {
  
 UserRealm 还提供了 clearAllCachedAuthorizationInfo、clearAllCachedAuthenticationInfo、clearAllCache，用于清空整个缓存。  
 
-在某些清空下这种方式可能不是最好的选择，可以考虑直接废弃 Shiro 的缓存，然后自己通过如 AOP 机制实现自己的缓存；可以参考：  [
-https://github.com/zhangkaitao/es/tree/master/web/src/main/java/com/sishuok/es/extra/aop](https://github.com/zhangkaitao/es/tree/master/web/src/main/java/com/sishuok/es/extra/aop)  
+在某些清空下这种方式可能不是最好的选择，可以考虑直接废弃 Shiro 的缓存，然后自己通过如 AOP 机制实现自己的缓存；可以参考：  [https://github.com/zhangkaitao/es/tree/master/web/src/main/java/com/sishuok/es/extra/aop](https://github.com/zhangkaitao/es/tree/master/web/src/main/java/com/sishuok/es/extra/aop)  
 
 另外如果和 Spring 集成时可以考虑直接使用 Spring 的 Cache 抽象，可以考虑使用 SpringCacheManagerWrapper，其对 Spring Cache 进行了包装，转换为 Shiro 的 CacheManager 实现：  
 [https://github.com/zhangkaitao/es/blob/master/web/src/main/java/org/apache/shiro/cache/spring/SpringCacheManagerWrapper.java](https://github.com/zhangkaitao/es/blob/master/web/src/main/java/org/apache/shiro/cache/spring/SpringCacheManagerWrapper.java)

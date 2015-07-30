@@ -1,4 +1,4 @@
-# 2. 身份验证
+# 身份验证
 
 **身份验证**，即在应用中谁能证明他就是他本人。一般提供如他们的身份 ID 一些标识信息来表明他就是他本人，如提供身份证，用户名 / 密码来证明。
 
@@ -12,7 +12,7 @@
 
 另外两个相关的概念是之前提到的 **Subject** 及 **Realm**，分别是主体及验证主体的数据源。
 
-## 2.1 环境准备
+## 环境准备
 
 本文使用 Maven 构建，因此需要一点 Maven 知识。首先准备环境依赖：
 
@@ -38,7 +38,7 @@
 
 添加 junit、common-logging 及 shiro-core 依赖即可。
 
-## 2.2 登录 / 退出
+## 登录 / 退出
 
 1、首先准备一些用户身份 / 凭据（shiro.ini）
 
@@ -74,17 +74,17 @@ public void testHelloworld() {
 }
 ```
 
-- 2.1. 首先通过 new IniSecurityManagerFactory 并指定一个 ini 配置文件来创建一个 SecurityManager 工厂；
+- 首先通过 new IniSecurityManagerFactory 并指定一个 ini 配置文件来创建一个 SecurityManager 工厂；
 
-- 2.2. 接着获取 SecurityManager 并绑定到 SecurityUtils，这是一个全局设置，设置一次即可；
+- 接着获取 SecurityManager 并绑定到 SecurityUtils，这是一个全局设置，设置一次即可；
 
-- 2.3. 通过 SecurityUtils 得到 Subject，其会自动绑定到当前线程；如果在 web 环境在请求结束时需要解除绑定；然后获取身份验证的 Token，如用户名 / 密码；
+- 通过 SecurityUtils 得到 Subject，其会自动绑定到当前线程；如果在 web 环境在请求结束时需要解除绑定；然后获取身份验证的 Token，如用户名 / 密码；
 
-- 2.4. 调用 subject.login 方法进行登录，其会自动委托给 SecurityManager.login 方法进行登录；
+- 调用 subject.login 方法进行登录，其会自动委托给 SecurityManager.login 方法进行登录；
 
-- 2.5. 如果身份验证失败请捕获 AuthenticationException 或其子类，常见的如： DisabledAccountException（禁用的帐号）、LockedAccountException（锁定的帐号）、UnknownAccountException（错误的帐号）、ExcessiveAttemptsException（登录失败次数过多）、IncorrectCredentialsException （错误的凭证）、ExpiredCredentialsException（过期的凭证）等，具体请查看其继承关系；对于页面的错误消息展示，最好使用如 “用户名 / 密码错误” 而不是 “用户名错误”/“密码错误”，防止一些恶意用户非法扫描帐号库；
+- 如果身份验证失败请捕获 AuthenticationException 或其子类，常见的如： DisabledAccountException（禁用的帐号）、LockedAccountException（锁定的帐号）、UnknownAccountException（错误的帐号）、ExcessiveAttemptsException（登录失败次数过多）、IncorrectCredentialsException （错误的凭证）、ExpiredCredentialsException（过期的凭证）等，具体请查看其继承关系；对于页面的错误消息展示，最好使用如 “用户名 / 密码错误” 而不是 “用户名错误”/“密码错误”，防止一些恶意用户非法扫描帐号库；
 
-- 2.6. 最后可以调用 subject.logout 退出，其会自动委托给 SecurityManager.logout 方法退出。
+- 最后可以调用 subject.logout 退出，其会自动委托给 SecurityManager.logout 方法退出。
 
 **从如上代码可总结出身份验证的步骤**：
 
@@ -100,7 +100,7 @@ public void testHelloworld() {
 
 2. 用户身份 Token 可能不仅仅是用户名 / 密码，也可能还有其他的，如登录时允许用户名 / 邮箱 / 手机号同时登录。 
 
-##2.3 身份认证流程
+## 身份认证流程
 
 ![](images/4.png)
 
@@ -112,7 +112,7 @@ public void testHelloworld() {
 4. Authenticator 可能会委托给相应的 AuthenticationStrategy 进行多 Realm 身份验证，默认 ModularRealmAuthenticator 会调用 AuthenticationStrategy 进行多 Realm 身份验证；
 5. Authenticator 会把相应的 token 传入 Realm，从 Realm 获取身份验证信息，如果没有返回 / 抛出异常表示身份验证失败了。此处可以配置多个 Realm，将按照相应的顺序及策略进行访问。
 
-##2.4  Realm
+## Realm
 
 Realm：域，Shiro 从从 Realm 获取安全数据（如用户、角色、权限），就是说 SecurityManager 要验证用户身份，那么它需要从 Realm 获取相应的用户进行比较以确定用户身份是否合法；也需要从 Realm 得到用户相应的角色 / 权限进行验证用户是否能进行操作；可以把 Realm 看成 DataSource，即安全数据源。如我们之前的 ini 配置方式将使用 org.apache.shiro.realm.text.IniRealm。
 
@@ -236,7 +236,7 @@ securityManager.realms=$jdbcRealm&nbsp;
 3. $ 变量名 引用之前的一个对象实例 
 4. 测试代码请参照 com.github.zhangkaitao.shiro.chapter2.LoginLogoutTest 的 testJDBCRealm 方法，和之前的没什么区别。
 
-##2.5  Authenticator 及 AuthenticationStrategy
+## Authenticator 及 AuthenticationStrategy
 
 Authenticator 的职责是验证用户帐号，是 Shiro API 中身份验证核心的入口点：
 
@@ -282,7 +282,7 @@ securityManager.realms=$myRealm1,$myRealm3
 
 2、测试代码（com.github.zhangkaitao.shiro.chapter2.AuthenticatorTest）
 
-- 2.1. 首先通用化登录逻辑
+- 首先通用化登录逻辑
 
 ```
     private void login(String configFile) {
@@ -299,7 +299,7 @@ securityManager.realms=$myRealm1,$myRealm3
     }
 ```
 
-- 2.2.测试 AllSuccessfulStrategy 成功：
+- 测试 AllSuccessfulStrategy 成功：
 
 ```
     @Test
@@ -314,7 +314,7 @@ securityManager.realms=$myRealm1,$myRealm3
 
 即 PrincipalCollection 包含了 zhang 和 zhang@163.com 身份信息。
 
-- 2.3.测试 AllSuccessfulStrategy 失败：
+- 测试 AllSuccessfulStrategy 失败：
 
 ```
     @Test(expected = UnknownAccountException.class)

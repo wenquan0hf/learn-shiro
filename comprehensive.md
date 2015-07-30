@@ -1,4 +1,4 @@
-# 16. 综合实例
+# 综合实例
 
 ![](images/19.png)
 
@@ -6,7 +6,7 @@
 
 用户 (sys_user)
 
-<table style="border-collapse: collapse; border: none;" cellspacing="0" border="1" cellpadding="0">
+<table>
 <tbody><tr>
 <td>
 <p class="MsoNormal"><span style="font-family: 宋体;">名称</span></p>
@@ -108,7 +108,8 @@
 </tbody></table>
 
 组织机构 (sys_organization)  
-<table style="border-collapse: collapse; border: none;" cellspacing="0" border="1" cellpadding="0" class="MsoNormalTable">
+
+<table>
 <tbody><tr>
 <td>
 <p class="MsoNormal"><span style="font-family: 宋体;">名称</span></p>
@@ -427,7 +428,7 @@
 </tr>
 </tbody></table>
 
-**资源**：表示菜单元素、页面按钮元素等；菜单元素用来显示界面菜单的，页面按钮是每个页面可进行的操作，如新增、修改、删除按钮；使用 type 来区分元素类型（如 menu 表示菜单，button 代表按钮），priority 是元素的排序，如菜单显示顺序；permission 表示权限；如用户菜单使用 user:*；也就是把菜单授权给用户后，用户就拥有了 user:* 权限；如用户新增按钮使用 user:create，也就是把用户新增按钮授权给用户后，用户就拥有了 user:create 权限了；available 表示资源是否可用，如菜单显示 / 不显示。  
+**资源**：表示菜单元素、页面按钮元素等；菜单元素用来显示界面菜单的，页面按钮是每个页面可进行的操作，如新增、修改、删除按钮；使用 type 来区分元素类型（如 menu 表示菜单，button 代表按钮），priority 是元素的排序，如菜单显示顺序；permission 表示权限；如用户菜单使用 `user:*`；也就是把菜单授权给用户后，用户就拥有了 `user:*` 权限；如用户新增按钮使用 user:create，也就是把用户新增按钮授权给用户后，用户就拥有了 user:create 权限了；available 表示资源是否可用，如菜单显示 / 不显示。  
 
 **角色**：role 表示角色标识符，如 admin，用于后台判断使用；description 表示角色描述，如超级管理员，用于前端显示给用户使用；resource_ids 表示该角色拥有的资源列表，即该角色拥有的权限列表（显示角色），即角色是权限字符串集合；available 表示角色是否可用。  
 
@@ -436,7 +437,8 @@
 **用户**：username 表示用户名；password 表示密码；salt 表示加密密码的盐；role_ids 表示用户拥有的角色列表，可以通过角色再获取其权限字符串列表；locked 表示用户是否锁定。
 
 此处如资源、组织机构都是树型结构：
-<table style="border-collapse: collapse; border: none;" cellspacing="0" border="1" cellpadding="0" class="MsoNormalTable">
+
+<table>
 <tbody><tr>
 <td>
 <p class="MsoNormal"><span>id</span></p>
@@ -518,19 +520,24 @@ parent_id 表示父编号，parent_ids 表示所有祖先编号；如 0/1/2/ 表
 更复杂的权限请参考我的《JavaEE 项目开发脚手架》：[http://github.com/zhangkaitao/es](http://github.com/zhangkaitao/es)。
 
 ## 表 / 数据 SQL  
-具体请参考    
-sql/ shiro-schema.sql （表结构）  
-sql/ shiro-data.sql  （初始数据）  
+
+具体请参考   
+ 
+- sql/ shiro-schema.sql （表结构）  
+- sql/ shiro-data.sql  （初始数据）  
  
 默认用户名 / 密码是 admin/123456。
 
 ## 实体
+
 具体请参考 com.github.zhangkaitao.shiro.chapter16.entity 包下的实体，此处就不列举了。
  
 ## DAO
+
 具体请参考 com.github.zhangkaitao.shiro.chapter16.dao 包下的 DAO 接口及实现。
  
 ## Service
+
 具体请参考 com.github.zhangkaitao.shiro.chapter16.service 包下的 Service 接口及实现。以下是出了基本 CRUD 之外的关键接口：
 
 ```
@@ -776,12 +783,15 @@ sysUserFilter 用于根据当前登录用户身份获取 User 信息放入 reque
 ## 相关资料
 
 《跟我学 spring3》  
-     [http://www.iteye.com/blogs/subjects/spring3](http://www.iteye.com/blogs/subjects/spring3)  
+[http://www.iteye.com/blogs/subjects/spring3](http://www.iteye.com/blogs/subjects/spring3)
+  
 《跟开涛学 SpringMVC》  
-     [http://www.iteye.com/blogs/subjects/kaitao-springmvc](http://www.iteye.com/blogs/subjects/kaitao-springmvc)  
+[http://www.iteye.com/blogs/subjects/kaitao-springmvc](http://www.iteye.com/blogs/subjects/kaitao-springmvc)  
+
 《简单 shiro 扩展实现 NOT、AND、OR 权限验证》  
-     [http://jinnianshilongnian.iteye.com/blog/1864800](http://jinnianshilongnian.iteye.com/blog/1864800)  
+[http://jinnianshilongnian.iteye.com/blog/1864800](http://jinnianshilongnian.iteye.com/blog/1864800)  
+
 《Shiro+Struts2+Spring3 加上 @RequiresPermissions 后 @Autowired 失效》    
-     [http://jinnianshilongnian.iteye.com/blog/1850425](http://jinnianshilongnian.iteye.com/blog/1850425)
+[http://jinnianshilongnian.iteye.com/blog/1850425](http://jinnianshilongnian.iteye.com/blog/1850425)
  
 更复杂的权限请参考我的《JavaEE 项目开发脚手架》：[http://github.com/zhangkaitao/es](http://github.com/zhangkaitao/es)，提供了更加复杂的实现。

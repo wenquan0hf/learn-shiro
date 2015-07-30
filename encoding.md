@@ -1,8 +1,8 @@
-# 5. 编码/加密
+# 编码/加密
 
 在涉及到密码存储问题上，应该加密 / 生成密码摘要存储，而不是存储明文密码。比如之前的 600w csdn 账号泄露对用户可能造成很大损失，因此应加密 / 生成不可逆的摘要方式存储。
 
-## 5.1 编码 / 解码   
+## 编码 / 解码   
 
 Shiro 提供了 base64 和 16 进制字符串编码 / 解码的 API 支持，方便一些编码解码操作。Shiro 内部的一些数据的存储 / 表示都使用了 base64 和 16 进制字符串。  
 
@@ -26,7 +26,7 @@ Assert.assertEquals(str, str2);&nbsp;
  
 还有一个可能经常用到的类 CodecSupport，提供了 toBytes(str,"utf-8") / toString(bytes,"utf-8") 用于在 byte 数组 /String 之间转换。
 
-##5.2 散列算法  
+## 散列算法  
 
 散列算法一般用于生成数据的摘要信息，是一种不可逆的算法，一般适合存储密码之类的数据，常见的散列算法如 MD5、SHA 等。一般进行散列时最好提供一个 salt（盐），比如加密密码 “admin”，产生的散列值是 “21232f297a57a5a743894a0e4a801fc3”，可以到一些 md5 解密网站很容易的通过散列值得到密码 “admin”，即如果直接对密码进行散列相对来说破解更容易，此时我们可以加一些只有系统知道的干扰数据，如用户名和 ID（即盐）；这样散列的对象是 “密码 + 用户名 +ID”，这样生成的散列值相对来说更难破解。
 
@@ -89,7 +89,7 @@ randomNumberGenerator.setSeed("123".getBytes());
 String hex = randomNumberGenerator.nextBytes().toHex();&nbsp;
 ```
 
-## 5.3 加密 / 解密 
+## 加密 / 解密 
 
 Shiro 还提供对称式加密 / 解密算法的支持，如 AES、Blowfish 等；当前还没有提供对非对称加密 / 解密算法支持，未来版本可能提供。
  
@@ -112,7 +112,7 @@ Assert.assertEquals(text, text2);&nbsp;
 
 更多算法请参考示例 com.github.zhangkaitao.shiro.chapter5.hash.CodecAndCryptoTest。  
 
-## 5.4 PasswordService/CredentialsMatcher  
+## PasswordService/CredentialsMatcher  
 
 Shiro 提供了 PasswordService 及 CredentialsMatcher 用于提供加密密码及验证密码服务。  
 
@@ -173,12 +173,12 @@ myRealm.credentialsMatcher=$passwordMatcher
 securityManager.realms=$myRealm&nbsp;
 ```
 
-- 2.1、passwordService 使用 DefaultPasswordService，如果有必要也可以自定义；
-- 2.2、hashService 定义散列密码使用的 HashService，默认使用 DefaultHashService（默认 SHA-256 算法）；
-- 2.3、hashFormat 用于对散列出的值进行格式化，默认使用 Shiro1CryptFormat，另外提供了 Base64Format 和 HexFormat，对于有 salt 的密码请自定义实现 ParsableHashFormat 然后把 salt 格式化到散列值中；
-- 2.4、hashFormatFactory 用于根据散列值得到散列的密码和 salt；因为如果使用如 SHA 算法，那么会生成一个 salt，此 salt 需要保存到散列后的值中以便之后与传入的密码比较时使用；默认使用 DefaultHashFormatFactory；
-- 2.5、passwordMatcher 使用 PasswordMatcher，其是一个 CredentialsMatcher 实现；
-- 2.6、将 credentialsMatcher 赋值给 myRealm，myRealm 间接继承了 AuthenticatingRealm，其在调用 getAuthenticationInfo 方法获取到 AuthenticationInfo 信息后，会使用 credentialsMatcher 来验证凭据是否匹配，如果不匹配将抛出 IncorrectCredentialsException 异常。
+- passwordService 使用 DefaultPasswordService，如果有必要也可以自定义；
+- hashService 定义散列密码使用的 HashService，默认使用 DefaultHashService（默认 SHA-256 算法）；
+- hashFormat 用于对散列出的值进行格式化，默认使用 Shiro1CryptFormat，另外提供了 Base64Format 和 HexFormat，对于有 salt 的密码请自定义实现 ParsableHashFormat 然后把 salt 格式化到散列值中；
+- hashFormatFactory 用于根据散列值得到散列的密码和 salt；因为如果使用如 SHA 算法，那么会生成一个 salt，此 salt 需要保存到散列后的值中以便之后与传入的密码比较时使用；默认使用 DefaultHashFormatFactory；
+- passwordMatcher 使用 PasswordMatcher，其是一个 CredentialsMatcher 实现；
+- 将 credentialsMatcher 赋值给 myRealm，myRealm 间接继承了 AuthenticatingRealm，其在调用 getAuthenticationInfo 方法获取到 AuthenticationInfo 信息后，会使用 credentialsMatcher 来验证凭据是否匹配，如果不匹配将抛出 IncorrectCredentialsException 异常。
 
 3、测试用例请参考 com.github.zhangkaitao.shiro.chapter5.hash.PasswordTest。  
 
@@ -223,7 +223,7 @@ SimpleAuthenticationInfo ai =
 
 此处就是把步骤 1 中生成的相应数据组装为 SimpleAuthenticationInfo，通过 SimpleAuthenticationInfo 的 credentialsSalt 设置盐，HashedCredentialsMatcher 会自动识别这个盐。
  
-如果使用 JdbcRealm，需要修改获取用户信息（包括盐）的 sql：“select password, password_salt from users where username = ?”，而我们的盐是由 username+password_salt 组成，所以需要通过如下 ini 配置（shiro-jdbc-hashedCredentialsMatcher.ini）修改：
+如果使用 JdbcRealm，需要修改获取用户信息（包括盐）的 `sql：“select password, password_salt from users where username = ?”`，而我们的盐是由 username+password_salt 组成，所以需要通过如下 ini 配置（shiro-jdbc-hashedCredentialsMatcher.ini）修改：
 
 ```
 jdbcRealm.saltStyle=COLUMN
@@ -231,8 +231,8 @@ jdbcRealm.authenticationQuery=select password, concat(username,password_salt) fr
 jdbcRealm.credentialsMatcher=$credentialsMatcher&nbsp;
 ```
 
-2.1、saltStyle 表示使用密码 + 盐的机制，authenticationQuery 第一列是密码，第二列是盐；  
-2.2、通过 authenticationQuery 指定密码及盐查询 SQL；
+- saltStyle 表示使用密码 + 盐的机制，authenticationQuery 第一列是密码，第二列是盐；  
+- 通过 authenticationQuery 指定密码及盐查询 SQL；
 
 此处还要注意 Shiro 默认使用了 apache commons BeanUtils，默认是不进行 Enum 类型转型的，此时需要自己注册一个 Enum 转换器 “BeanUtilsBean.getInstance().getConvertUtils().register(new EnumConverter(), JdbcRealm.SaltStyle.class);” 具体请参考示例 “com.github.zhangkaitao.shiro.chapter5.hash.PasswordTest” 中的代码。
  
@@ -251,9 +251,9 @@ myRealm.credentialsMatcher=$credentialsMatcher
 securityManager.realms=$myRealm&nbsp;
 ```
 
-3.1、通过 credentialsMatcher.hashAlgorithmName=md5 指定散列算法为 md5，需要和生成密码时的一样；  
-3.2、credentialsMatcher.hashIterations=2，散列迭代次数，需要和生成密码时的意义；  
-3.3、credentialsMatcher.storedCredentialsHexEncoded=true 表示是否存储散列后的密码为 16 进制，需要和生成密码时的一样，默认是 base64； 
+- 通过 credentialsMatcher.hashAlgorithmName=md5 指定散列算法为 md5，需要和生成密码时的一样；  
+- credentialsMatcher.hashIterations=2，散列迭代次数，需要和生成密码时的意义；  
+- credentialsMatcher.storedCredentialsHexEncoded=true 表示是否存储散列后的密码为 16 进制，需要和生成密码时的一样，默认是 base64； 
 
 此处最需要注意的就是 HashedCredentialsMatcher 的算法需要和生成密码时的算法一样。另外 HashedCredentialsMatcher 会自动根据 AuthenticationInfo 的类型是否是 SaltedAuthenticationInfo 来获取 credentialsSalt 盐。  
 

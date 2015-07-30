@@ -1,8 +1,8 @@
-# 7. 与 Web 集成  
+# 与 Web 集成  
 
 Shiro 提供了与 Web 集成的支持，其通过一个 ShiroFilter 入口来拦截需要安全控制的 URL，然后进行相应的控制，ShiroFilter 类似于如 Strut2/SpringMVC 这种 web 框架的前端控制器，其是安全控制的入口点，其负责读取配置（如 ini 配置文件），然后判断 URL 是否需要登录 / 权限等工作。  
 
-## 7.1 准备环境  
+## 准备环境  
 
 **1、创建 webapp 应用**
  
@@ -35,7 +35,7 @@ shiro-web
 
 其他依赖请参考源码的 pom.xml。  
 
-## 7.2 ShiroFilter 入口  
+## ShiroFilter 入口  
 
 **1、Shiro 1.1 及以前版本配置方式**
 
@@ -55,7 +55,7 @@ shiro-web
 ```
 
 1. 使用 IniShiroFilter 作为 Shiro 安全控制的入口点，通过 url-pattern 指定需要安全的 URL；  
-2. 通过 configPath 指定 ini 配置文件位置，默认是先从 / WEB-INF/shiro.ini 加载，如果没有就默认加载 classpath:shiro.ini，即默认相对于 web 应用上下文根路径；  
+2. 通过 configPath 指定 ini 配置文件位置，默认是先从 /WEB-INF/shiro.ini 加载，如果没有就默认加载 classpath:shiro.ini，即默认相对于 web 应用上下文根路径；  
 3. 也可以通过如下方式直接内嵌 ini 配置文件内容到 web.xml。
 
 ```
@@ -123,7 +123,7 @@ DelegatingFilterProxy 作用是自动到 spring 容器查找名字为 shiroFilte
 最后不要忘了使用 org.springframework.web.context.ContextLoaderListener 加载这个 spring 配置文件即可。
 因为我们现在的 shiro 版本是 1.2 的，因此之后的测试都是使用 1.2 的配置。  
 
-## 7.3 Web INI 配置
+## Web INI 配置
 
 ini 配置部分和之前的相比将多出对 url 部分的配置。  
 
@@ -169,9 +169,9 @@ url 模式匹配顺序是按照在配置中的声明顺序匹配，即从头开�
  
 拦截器将在下一节详细介绍。接着我们来看看身份验证、授权及退出在 web 中如何实现。  
 
-###1、身份验证（登录）  
+### 身份验证（登录）  
 
-**1.1、首先配置需要身份验证的 url**   
+**首先配置需要身份验证的 url**   
 
 ```
 /authenticated=authc
@@ -183,7 +183,7 @@ url 模式匹配顺序是按照在配置中的声明顺序匹配，即从头开�
 
 `authc.loginUrl=/login`
 
-**1.2、登录 Servlet（com.github.zhangkaitao.shiro.chapter7.web.servlet.LoginServlet）**
+**登录 Servlet（com.github.zhangkaitao.shiro.chapter7.web.servlet.LoginServlet）**
 
 ```
 @WebServlet(name = "loginServlet", urlPatterns = "/login")
@@ -225,7 +225,7 @@ public class LoginServlet extends HttpServlet {
 2. doPost 时进行登录，登录时收集 username/password 参数，然后提交给 Subject 进行登录。如果有错误再返回到登录页面；否则跳转到登录成功页面（此处应该返回到访问登录页面之前的那个页面，或者没有上一个页面时访问主页）。  
 3. JSP 页面请参考源码。  
 
-**1.3、测试**
+**测试**
 
 首先输入 http://localhost:8080/chapter7/login 进行登录，登录成功后接着可以访问 http://localhost:8080/chapter7/authenticated 来显示当前登录的用户：
 
@@ -235,9 +235,9 @@ public class LoginServlet extends HttpServlet {
 
 Shiro 内置了登录（身份验证）的实现：基于表单的和基于 Basic 的验证，其通过拦截器实现。  
 
-###2、基于 Basic 的拦截器身份验证  
+### 基于 Basic 的拦截器身份验证  
 
-**2.1、shiro-basicfilterlogin.ini 配置**
+**shiro-basicfilterlogin.ini 配置**
 
 ```
 [main]
@@ -253,19 +253,19 @@ authcBasic.applicationName=please login
 
 2、[urls] 部分配置了 /role 地址需要走 authcBasic 拦截器，即如果访问 /role 时还没有通过身份验证那么将弹出如上图的对话框进行登录，登录成功即可访问。  
 
-**2.2、web.xml**
+**web.xml**
 
 把 shiroConfigLocations 改为 shiro-basicfilterlogin.ini 即可。
 
-**2.3、测试**  
+**测试**  
 
 输入 http://localhost:8080/chapter7/role，会弹出之前的 Basic 验证对话框输入 “zhang/123” 即可登录成功进行访问。  
 
-###3、基于表单的拦截器身份验证  
+### 基于表单的拦截器身份验证  
 
 基于表单的拦截器身份验证和【1】类似，但是更简单，因为其已经实现了大部分登录逻辑；我们只需要指定：登录地址 / 登录失败后错误信息存哪 / 成功的地址即可。  
 
-**3.1、shiro-formfilterlogin.ini**
+**shiro-formfilterlogin.ini**
 
 ```
 [main]
@@ -280,11 +280,11 @@ authc.failureKeyAttribute=shiroLoginFailure
 
 1、authc 是 org.apache.shiro.web.filter.authc.FormAuthenticationFilter 类型的实例，其用于实现基于表单的身份验证；通过 loginUrl 指定当身份验证时的登录表单；usernameParam 指定登录表单提交的用户名参数名；passwordParam 指定登录表单提交的密码参数名；successUrl 指定登录成功后重定向的默认地址（默认是 “/”）（如果有上一个地址会自动重定向带该地址）；failureKeyAttribute 指定登录失败时的 request 属性 key（默认 shiroLoginFailure）；这样可以在登录表单得到该错误 key 显示相应的错误消息；  
 
-**3.2、web.xml**  
+**web.xml**  
 
-把 shiroConfigLocations 改为 shiro- formfilterlogin.ini 即可。  
+把 shiroConfigLocations 改为 shiro-formfilterlogin.ini 即可。  
 
-**3.3、登录 Servlet**
+**登录 Servlet**
 
 ```
 @WebServlet(name = "formFilterLoginServlet", urlPatterns = "/formfilterlogin")
@@ -312,13 +312,13 @@ public class FormFilterLoginServlet extends HttpServlet {
 
 在登录 Servlet 中通过 shiroLoginFailure 得到 authc 登录失败时的异常类型名，然后根据此异常名来决定显示什么错误消息。  
 
-**3.4、测试**  
+**测试**  
 
-输入 http://localhost:8080/chapter7/role，会跳转到 “/formfilterlogin” 登录表单，提交表单如果 authc 拦截器登录成功后，会直接重定向会之前的地址 “/role”；假设我们直接访问 “/formfilterlogin” 的话登录成功将直接到默认的 successUrl。   
+输入 `http://localhost:8080/chapter7/role`，会跳转到 “/formfilterlogin” 登录表单，提交表单如果 authc 拦截器登录成功后，会直接重定向会之前的地址 “/role”；假设我们直接访问 “/formfilterlogin” 的话登录成功将直接到默认的 successUrl。   
 
-### 4、授权（角色 / 权限验证）
+### 授权（角色 / 权限验证）
 
-**4.1、shiro.ini**
+**shiro.ini**
 
 ```
 [main]
@@ -331,11 +331,11 @@ perms.unauthorizedUrl=/unauthorized
 
 通过 unauthorizedUrl 属性指定如果授权失败时重定向到的地址。roles 是 org.apache.shiro.web.filter.authz.RolesAuthorizationFilter 类型的实例，通过参数指定访问时需要的角色，如 “[admin]”，如果有多个使用 “，” 分割，且验证时是 hasAllRole 验证，即且的关系。Perms 是 org.apache.shiro.web.filter.authz.PermissionsAuthorizationFilter 类型的实例，和 roles 类似，只是验证权限字符串。  
 
-**4.2、web.xml**
+**web.xml**
 
 把 shiroConfigLocations 改为 shiro.ini 即可。  
 
-**4.3、RoleServlet/PermissionServlet**
+**RoleServlet/PermissionServlet**
 
 ```
 @WebServlet(name = "permissionServlet", urlPatterns = "/permission")
@@ -363,13 +363,13 @@ public class RoleServlet extends HttpServlet {
 }&nbsp;
 ```
 
-**4.4、测试**
+**测试**
 
-首先访问 http://localhost:8080/chapter7/login，使用帐号 “zhang/123” 进行登录，再访问 /role 或 /permission 时会跳转到成功页面（因为其授权成功了）；如果使用帐号 “wang/123” 登录成功后访问这两个地址会跳转到 “/unauthorized” 即没有授权页面。  
+首先访问 `http://localhost:8080/chapter7/login`，使用帐号 “zhang/123” 进行登录，再访问 /role 或 /permission 时会跳转到成功页面（因为其授权成功了）；如果使用帐号 “wang/123” 登录成功后访问这两个地址会跳转到 “/unauthorized” 即没有授权页面。  
 
-### 5、退出
+### 退出
 
-**5.1、shiro.ini** 
+**shiro.ini** 
 
 ```
 [urls]
@@ -378,7 +378,7 @@ public class RoleServlet extends HttpServlet {
 
 指定 /logout 使用 anon 拦截器即可，即不需要登录即可访问。
 
-**5.2、LogoutServlet**
+**LogoutServlet**
 
 ```
 @WebServlet(name = "logoutServlet", urlPatterns = "/logout")
@@ -393,9 +393,9 @@ public class LogoutServlet extends HttpServlet {
 
 直接调用 Subject.logout 即可，退出成功后转发 / 重定向到相应页面即可。  
 
-**5.3、测试**
+**测试**
 
-首先访问 http://localhost:8080/chapter7/login，使用帐号 “zhang/123” 进行登录，登录成功后访问 /logout 即可退出。  
+首先访问 `http://localhost:8080/chapter7/login`，使用帐号 “zhang/123” 进行登录，登录成功后访问 /logout 即可退出。  
 
 Shiro 也提供了 logout 拦截器用于退出，其是 org.apache.shiro.web.filter.authc.LogoutFilter 类型的实例，我们可以在 shiro.ini 配置文件中通过如下配置完成退出：  
 

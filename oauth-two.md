@@ -1,4 +1,4 @@
-# 17. OAuth2 集成
+# OAuth2 集成
 
 目前很多开放平台如新浪微博开放平台都在使用提供开放 API 接口供开发者使用，随之带来了第三方应用要到开放平台进行授权的问题，OAuth 就是干这个的，OAuth2 是 OAuth 协议的下一个版本，相比 OAuth1，OAuth2 整个授权流程更简单安全了，但不兼容 OAuth1，具体可以到 OAuth2 官网 [http://oauth.net/2/](http://oauth.net/2/) 查看，OAuth2 协议规范可以参考 [http://tools.ietf.org/html/rfc6749](http://tools.ietf.org/html/rfc6749)。目前有好多参考实现供选择，可以到其官网查看下载。
  
@@ -46,8 +46,10 @@
 其他的请参考 pom.xml。  
 
 ## 数据字典
-用户 (oauth2_user)  
-<table cellspacing="0" border="1" class="MsoNormalTable" cellpadding="0" style="border-collapse: collapse; border: none;">
+
+用户 (oauth2_user)
+  
+<table>
 <tbody><tr>
 <td>
 <p class="MsoNormal"><span style="font-family: 宋体;">名称</span></p>
@@ -121,7 +123,8 @@
 </tbody></table>
 
 客户端 (oauth2_client)  
-<table cellspacing="0" border="1" class="MsoNormalTable" cellpadding="0" style="border-collapse: collapse; border: none;">
+
+<table>
 <tbody><tr>
 <td>
 <p class="MsoNormal"><span style="font-family: 宋体;">名称</span></p>
@@ -199,8 +202,9 @@
 ## 表及数据 SQL  
 
 具体请参考  
-sql/ shiro-schema.sql （表结构）  
-sql/ shiro-data.sql  （初始数据）  
+
+- sql/ shiro-schema.sql （表结构）  
+- sql/ shiro-data.sql  （初始数据）  
  
 默认用户名 / 密码是 admin/123456。  
 
@@ -358,11 +362,10 @@ public class AuthorizeController {
 
 如上代码的作用：
 
-1. 首先通过如 http://localhost:8080/chapter17-server/authorize
-?client_id=c1ebe466-1cdc-4bd3-ab69-77c3561b9dee&response_type=code&redirect_uri=http://localhost:9080/chapter17-client/oauth2-login 访问授权页面；
+1. 首先通过如 `http://localhost:8080/chapter17-server/authorize?client_id=c1ebe466-1cdc-4bd3-ab69-77c3561b9dee&response_type=code&redirect_uri=http://localhost:9080/chapter17-client/oauth2-login` 访问授权页面；
 2. 该控制器首先检查 clientId 是否正确；如果错误将返回相应的错误信息；
 3. 然后判断用户是否登录了，如果没有登录首先到登录页面登录；
-4. 登录成功后生成相应的 auth code 即授权码，然后重定向到客户端地址，如 http://localhost:9080/chapter17-client/oauth2-login?code=52b1832f5dff68122f4f00ae995da0ed；在重定向到的地址中会带上 code 参数（授权码），接着客户端可以根据授权码去换取 access token。  
+4. 登录成功后生成相应的 auth code 即授权码，然后重定向到客户端地址，如 `http://localhost:9080/chapter17-client/oauth2-login?code=52b1832f5dff68122f4f00ae995da0ed`；在重定向到的地址中会带上 code 参数（授权码），接着客户端可以根据授权码去换取 access token。  
 
 ### 访问令牌控制器 AccessTokenController  
 
@@ -440,7 +443,7 @@ public class AccessTokenController {
 
 如上代码的作用：  
 
-1. 首先通过如 http://localhost:8080/chapter17-server/accessToken，POST 提交如下数据：client_id= c1ebe466-1cdc-4bd3-ab69-77c3561b9dee& client_secret= d8346ea2-6017-43ed-ad68-19c0f971738b&grant_type=authorization_code&code=828beda907066d058584f37bcfd597b6&redirect_uri=http://localhost:9080/chapter17-client/oauth2-login 访问；
+1. 首先通过如 `http://localhost:8080/chapter17-server/accessToken`，POST 提交如下数据：`client_id= c1ebe466-1cdc-4bd3-ab69-77c3561b9dee& client_secret= d8346ea2-6017-43ed-ad68-19c0f971738b&grant_type=authorization_code&code=828beda907066d058584f37bcfd597b6&redirect_uri=http://localhost:9080/chapter17-client/oauth2-login` 访问；
 2. 该控制器会验证 client_id、client_secret、auth code 的正确性，如果错误会返回相应的错误；
 3. 如果验证通过会生成并返回相应的访问令牌 access token。  
 
@@ -506,13 +509,13 @@ public class UserInfoController {
 
 如上代码的作用：  
 
-1. 首先通过如 http://localhost:8080/chapter17-server/userInfo? access_token=828beda907066d058584f37bcfd597b6 进行访问；
+1. 首先通过如 `http://localhost:8080/chapter17-server/userInfo? access_token=828beda907066d058584f37bcfd597b6` 进行访问；
 2. 该控制器会验证 access token 的有效性；如果无效了将返回相应的错误，客户端再重新进行授权；
 3. 如果有效，则返回当前登录用户的用户名。
 
 ## Spring 配置文件
 
-具体请参考 resources/spring*.xml，此处只列举 spring-config-shiro.xml 中的 shiroFilter 的 filterChainDefinitions 属性：
+具体请参考 `resources/spring*.xml`，此处只列举 spring-config-shiro.xml 中的 shiroFilter 的 filterChainDefinitions 属性：
 
 ```
 <property name="filterChainDefinitions">
@@ -534,12 +537,13 @@ public class UserInfoController {
 
 ## 服务器维护  
 
-访问 localhost:8080/chapter17-server/，登录后进行客户端管理和用户管理。  
+访问 `localhost:8080/chapter17-server/`，登录后进行客户端管理和用户管理。  
 客户端管理就是进行客户端的注册，如新浪微博的第三方应用就需要到新浪微博开发平台进行注册；用户管理就是进行如新浪微博用户的管理。  
 
-对于授权服务和资源服务的实现可以参考新浪微博开发平台的实现：  
-[http://open.weibo.com/wiki / 授权机制说明](http://open.weibo.com/wiki)   
-[http://open.weibo.com/wiki/ 微博 API](http://open.weibo.com/wiki/)
+对于授权服务和资源服务的实现可以参考新浪微博开发平台的实现： 
+ 
+- [http://open.weibo.com/wiki / 授权机制说明](http://open.weibo.com/wiki)   
+- [http://open.weibo.com/wiki/ 微博 API](http://open.weibo.com/wiki/)
 
 ## 客户端
 
@@ -651,7 +655,7 @@ public class OAuth2AuthenticationFilter extends AuthenticatingFilter {
 4. 登录成功将回调 onLoginSuccess 方法重定向到成功页面；
 5. 登录失败则回调 onLoginFailure 重定向到失败页面。  
 
-##OAuth2Realm 
+## OAuth2Realm 
 
 ```
 public class OAuth2Realm extends AuthorizingRealm {
@@ -758,18 +762,17 @@ public class OAuth2Realm extends AuthorizingRealm {
 </bean>
 ```
 
-此处设置 loginUrl 为 http://localhost:8080/chapter17-server/authorize
-?client_id=c1ebe466-1cdc-4bd3-ab69-77c3561b9dee&amp;response_type=code&amp;redirect_uri=http://localhost:9080/chapter17-client/oauth2-login"；其会自动设置到所有的 AccessControlFilter，如 oAuth2AuthenticationFilter；另外 /oauth2-login = oauth2Authc 表示 /oauth2-login 地址使用 oauth2Authc 拦截器拦截并进行 oauth2 客户端授权。
+此处设置 loginUrl 为 `http://localhost:8080/chapter17-server/authorize?client_id=c1ebe466-1cdc-4bd3-ab69-77c3561b9dee&amp;response_type=code&amp;redirect_uri=http://localhost:9080/chapter17-client/oauth2-login"`；其会自动设置到所有的 AccessControlFilter，如 oAuth2AuthenticationFilter；另外 /oauth2-login = oauth2Authc 表示 /oauth2-login 地址使用 oauth2Authc 拦截器拦截并进行 oauth2 客户端授权。
 
 ## 测试
 
-1、首先访问 http://localhost:9080/chapter17-client/，然后点击登录按钮进行登录，会跳到如下页面：
+1、首先访问 `http://localhost:9080/chapter17-client/`，然后点击登录按钮进行登录，会跳到如下页面：
 
 ![](images/27.png)
 
 2、输入用户名进行登录并授权；  
 
-3、如果登录成功，服务端会重定向到客户端，即之前客户端提供的地址 http://localhost:9080/chapter17-client/oauth2-login?code=473d56015bcf576f2ca03eac1a5bcc11，并带着 auth code 过去； 
+3、如果登录成功，服务端会重定向到客户端，即之前客户端提供的地址 `http://localhost:9080/chapter17-client/oauth2-login?code=473d56015bcf576f2ca03eac1a5bcc11`，并带着 auth code 过去； 
  
 4、客户端的 OAuth2AuthenticationFilter 会收集此 auth code，并创建 OAuth2Token 提交给 Subject 进行客户端登录；  
 

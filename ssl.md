@@ -3,52 +3,34 @@
 对于 SSL 的支持，Shiro 只是判断当前 url 是否需要 SSL 登录，如果需要自动重定向到 https 进行访问。  
 
 **首先生成数字证书，生成证书到 D:\localhost.keystore**  
-使用 JDK 的 keytool 命令，生成证书（包含证书 / 公钥 / 私钥）到 D:\localhost.keystore：
-keytool -genkey -keystore "D:\localhost.keystore" -alias localhost -keyalg RSA  
+使用 JDK 的 keytool 命令，生成证书（包含证书 / 公钥 / 私钥）到 `D:\localhost.keystore`：
 
-**首先生成数字证书，生成证书到 D:  \localhost.keystore**  
-使用 JDK 的 keytool 命令，生成证书（包含证书 / 公钥 / 私钥）到 D:\localhost.keystore：
-keytool -genkey -keystore "D:\localhost.keystore" -alias localhost -keyalg RSA  
-
-输入密钥库口令: 
+```
+keytool -genkey -keystore "D:\localhost.keystore" -alias localhost -keyalg RSA
+输入密钥库口令:
+再次输入新口令:
+您的名字与姓氏是什么?
+  [Unknown]:  localhost
+您的组织单位名称是什么?
+  [Unknown]:  sishuok.com
+您的组织名称是什么?
+  [Unknown]:  sishuok.com
+您所在的城市或区域名称是什么?
+  [Unknown]:  beijing
+您所在的省/市/自治区名称是什么?
+  [Unknown]:  beijing
+该单位的双字母国家/地区代码是什么?
+  [Unknown]:  cn
+CN=localhost, OU=sishuok.com, O=sishuok.com, L=beijing, ST=beijing, C=cn是否正确
+?
+  [否]:  y
  
-再次输入新口令:  
-
-您的名字与姓氏是什么? 
- 
-  \[Unknown\]:  localhost 
- 
-您的组织单位名称是什么? 
- 
-  \[Unknown\]:  sishuok.com 
- 
-您的组织名称是什么?  
-
-  \[Unknown\]:  sishuok.com  
-
-您所在的城市或区域名称是什么? 
- 
-  \[Unknown\]:  beijing  
-
-您所在的省 / 市 / 自治区名称是什么?  
-
-  \[Unknown\]:  beijing  
-
-该单位的双字母国家 / 地区代码是什么? 
-  
-  \[Unknown\]:  cn
-
-CN=localhost, OU=sishuok.com, O=sishuok.com, L=beijing, ST=beijing, C=cn 是否正确 ?
-
-  \[否\]:  y
- 
-输入 <localhost> 的密钥口令 
- 
+输入 <localhost> 的密钥口令
         (如果和密钥库口令相同, 按回车):
+再次输入新口令:
+```
 
-再次输入新口令:  
- 
-通过如上步骤，生成证书到 D:\ localhost.keystore；  
+通过如上步骤，生成证书到 `D:\ localhost.keystore`；  
 
 **然后设置 tomcat 下的 server.xml**  
 

@@ -1,4 +1,4 @@
-# 10. 会话管理
+# 会话管理
 
 Shiro 提供了完整的企业级会话管理功能，不依赖于底层容器（如 web 容器 tomcat），不管 JavaSE 还是 JavaEE 环境都可以使用，提供了会话管理、会话事件监听、会话存储 / 持久化、容器无关的集群、失效 / 过期支持、对 Web 的透明支持、SSO 单点登录的支持等特性。即直接使用 Shiro 的会话管理可以直接替换如 Web 容器的会话管理。  
 
@@ -92,7 +92,7 @@ securityManager.sessionManager=$sessionManager&nbsp;
 
 Web 环境下的 ini 配置 (shiro-web.ini)：  
 
-<!--EndFragment-->  
+`<!--EndFragment-->`  
 
 ```
 [main]
@@ -129,13 +129,13 @@ sessionManager.sessionIdCookieEnabled=true
 securityManager.sessionManager=$sessionManager&nbsp;
 ```
 
-sessionIdCookie 是 sessionManager 创建会话 Cookie 的模板：  
-sessionIdCookie.name：设置 Cookie 名字，默认为 JSESSIONID；  
-sessionIdCookie.domain：设置 Cookie 的域名，默认空，即当前访问的域名；  
-sessionIdCookie.path：设置 Cookie 的路径，默认空，即存储在域名根下；  
-sessionIdCookie.maxAge：设置 Cookie 的过期时间，秒为单位，默认 - 1 表示关闭浏览器时过期 Cookie；  
-sessionIdCookie.httpOnly：如果设置为 true，则客户端不会暴露给客户端脚本代码，使用 HttpOnly cookie 有助于减少某些类型的跨站点脚本攻击；此特性需要实现了 Servlet 2.5 MR6 及以上版本的规范的 Servlet 容器支持；  
-sessionManager.sessionIdCookieEnabled：是否启用 / 禁用 Session Id Cookie，默认是启用的；如果禁用后将不会设置 Session Id Cookie，即默认使用了 Servlet 容器的 JSESSIONID，且通过 URL 重写（URL 中的 “;JSESSIONID=id” 部分）保存 Session Id。  
+- sessionIdCookie 是 sessionManager 创建会话 Cookie 的模板：  
+- sessionIdCookie.name：设置 Cookie 名字，默认为 JSESSIONID；  
+- sessionIdCookie.domain：设置 Cookie 的域名，默认空，即当前访问的域名；  
+- sessionIdCookie.path：设置 Cookie 的路径，默认空，即存储在域名根下；  
+- sessionIdCookie.maxAge：设置 Cookie 的过期时间，秒为单位，默认 - 1 表示关闭浏览器时过期 Cookie；  
+- sessionIdCookie.httpOnly：如果设置为 true，则客户端不会暴露给客户端脚本代码，使用 HttpOnly cookie 有助于减少某些类型的跨站点脚本攻击；此特性需要实现了 Servlet 2.5 MR6 及以上版本的规范的 Servlet 容器支持；  
+- sessionManager.sessionIdCookieEnabled：是否启用 / 禁用 Session Id Cookie，默认是启用的；如果禁用后将不会设置 Session Id Cookie，即默认使用了 Servlet 容器的 JSESSIONID，且通过 URL 重写（URL 中的 “;JSESSIONID=id” 部分）保存 Session Id。  
 
 另外我们可以如 “sessionManager. sessionIdCookie.name=sid” 这种方式操作 Cookie 模板。  
 
@@ -232,10 +232,10 @@ cacheManager.cacheManagerConfigFile=classpath:ehcache.xml
 securityManager.cacheManager = $cacheManager&nbsp;
 ```
 
-sessionDAO. activeSessionsCacheName：设置 Session 缓存名字，默认就是 shiro-activeSessionCache；  
-cacheManager：缓存管理器，用于管理缓存的，此处使用 Ehcache 实现；  
-cacheManager.cacheManagerConfigFile：设置 ehcache 缓存的配置文件；  
-securityManager.cacheManager：设置 SecurityManager 的 cacheManager，会自动设置实现了 CacheManagerAware 接口的相应对象，如 SessionDAO 的 cacheManager；  
+- sessionDAO. activeSessionsCacheName：设置 Session 缓存名字，默认就是 shiro-activeSessionCache；  
+- cacheManager：缓存管理器，用于管理缓存的，此处使用 Ehcache 实现；  
+- cacheManager.cacheManagerConfigFile：设置 ehcache 缓存的配置文件；  
+- securityManager.cacheManager：设置 SecurityManager 的 cacheManager，会自动设置实现了 CacheManagerAware 接口的相应对象，如 SessionDAO 的 cacheManager；  
 
 然后配置 ehcache.xml：  
 
@@ -314,12 +314,12 @@ sessionManager.sessionValidationSchedulerEnabled=true
 sessionManager.sessionValidationScheduler=$sessionValidationScheduler&nbsp;
 ```
 
-sessionValidationScheduler：会话验证调度器，sessionManager 默认就是使用 ExecutorServiceSessionValidationScheduler，其使用 JDK 的 ScheduledExecutorService 进行定期调度并验证会话是否过期；  
-sessionValidationScheduler.interval：设置调度时间间隔，单位毫秒，默认就是 1 小时；  
-sessionValidationScheduler.sessionManager：设置会话验证调度器进行会话验证时的会话管理器；  
-sessionManager.globalSessionTimeout：设置全局会话超时时间，默认 30 分钟，即如果 30 分钟内没有访问会话将过期；  
-sessionManager.sessionValidationSchedulerEnabled：是否开启会话验证器，默认是开启的；  
-sessionManager.sessionValidationScheduler：设置会话验证调度器，默认就是使用 ExecutorServiceSessionValidationScheduler。  
+- sessionValidationScheduler：会话验证调度器，sessionManager 默认就是使用 ExecutorServiceSessionValidationScheduler，其使用 JDK 的 ScheduledExecutorService 进行定期调度并验证会话是否过期；  
+- sessionValidationScheduler.interval：设置调度时间间隔，单位毫秒，默认就是 1 小时；  
+- sessionValidationScheduler.sessionManager：设置会话验证调度器进行会话验证时的会话管理器；  
+- sessionManager.globalSessionTimeout：设置全局会话超时时间，默认 30 分钟，即如果 30 分钟内没有访问会话将过期；  
+- sessionManager.sessionValidationSchedulerEnabled：是否开启会话验证器，默认是开启的；  
+- sessionManager.sessionValidationScheduler：设置会话验证调度器，默认就是使用 ExecutorServiceSessionValidationScheduler。  
 
 Shiro 也提供了使用 Quartz 会话验证调度器：  
 

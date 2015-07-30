@@ -1,8 +1,8 @@
-# 6. Realm及相关对象
+# Realm 及相关对象
 
-## 6.1 Realm
+## Realm
 
-【2.5 Realm】及【3.5 Authorizer】部分都已经详细介绍过 Realm 了，接下来再来看一下一般真实环境下的 Realm 如何实现。  
+【Realm】及【Authorizer】部分都已经详细介绍过 Realm 了，接下来再来看一下一般真实环境下的 Realm 如何实现。  
 
 **1、定义实体及关系**
 
@@ -160,7 +160,7 @@ public class UserRealm extends AuthorizingRealm {
 
 为了节省篇幅，请参考测试用例 com.github.zhangkaitao.shiro.chapter6.realm.UserRealmTest。包含了：登录成功、用户名错误、密码错误、密码超出重试次数、有 / 没有角色、有 / 没有权限的测试。  
 
-## 6.2 AuthenticationToken
+## AuthenticationToken
 
 ![](images/8.png)
 
@@ -178,7 +178,7 @@ public interface AuthenticationToken extends Serializable {
  
 Shiro 提供了一个直接拿来用的 UsernamePasswordToken，用于实现用户名 / 密码 Token 组，另外其实现了 RememberMeAuthenticationToken 和 HostAuthenticationToken，可以实现记住我及主机验证的支持。
  
-## 6.3 AuthenticationInfo 
+## AuthenticationInfo 
 
 ![](images/9.png)
 
@@ -195,7 +195,7 @@ Account 相当于我们之前的 User，SimpleAccount 是其一个实现；在 I
  
 其他情况一般返回 SimpleAuthenticationInfo 即可。  
 
-## 6.4 PrincipalCollection
+## PrincipalCollection
 
 ![](images/10.png)
 
@@ -314,7 +314,7 @@ Object primaryPrincipal2 = princialCollection.getPrimaryPrincipal();&nbsp;
 
 根据 Realm 名字获取身份，因为 Realm 名字可以重复，所以可能多个身份，建议 Realm 名字尽量不要重复。  
 
-## 6.4 AuthorizationInfo
+## AuthorizationInfo
 
 ![](images/11.png)
 
@@ -334,7 +334,7 @@ Shiro 提供了一个实现 SimpleAuthorizationInfo，大多数时候使用这�
  
 对于 Account 及 SimpleAccount，之前的【6.3 AuthenticationInfo】已经介绍过了，用于 SimpleAccountRealm 子类，实现动态角色 / 权限维护的。  
 
-## 6.5 Subject  
+## Subject  
 
 ![](images/12.png)
 

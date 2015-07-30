@@ -1,4 +1,4 @@
-# 18. 并发登录人数控制
+# 并发登录人数控制
 
 在某些项目中可能会遇到如每个账户同时只能有一个人登录或几个人同时登录，如果同时有多人登录：要么不让后者登录；要么踢出前者登录（强制退出）。比如 spring security 就直接提供了相应的功能；Shiro 的话没有提供默认实现，不过可以很容易的在 Shiro 中加入这个功能。  
  
@@ -19,11 +19,11 @@ class="com.github.zhangkaitao.shiro.chapter18.web.shiro.filter.KickoutSessionCon
 </bean>&nbsp;
 ```  
 
-cacheManager：使用 cacheManager 获取相应的 cache 来缓存用户登录的会话；用于保存用户—会话之间的关系的；  
-sessionManager：用于根据会话 ID，获取会话进行踢出操作的；  
-kickoutAfter：是否踢出后来登录的，默认是 false；即后者登录的用户踢出前者登录的用户；  
-maxSession：同一个用户最大的会话数，默认 1；比如 2 的意思是同一个用户允许最多同时两个人登录；  
-kickoutUrl：被踢出后重定向到的地址；  
+- cacheManager：使用 cacheManager 获取相应的 cache 来缓存用户登录的会话；用于保存用户—会话之间的关系的；  
+- sessionManager：用于根据会话 ID，获取会话进行踢出操作的；  
+- kickoutAfter：是否踢出后来登录的，默认是 false；即后者登录的用户踢出前者登录的用户；  
+- maxSession：同一个用户最大的会话数，默认 1；比如 2 的意思是同一个用户允许最多同时两个人登录；  
+- kickoutUrl：被踢出后重定向到的地址；  
 
 shiroFilter 配置  
 
@@ -53,7 +53,7 @@ shiroFilter 配置
 
 **测试**
 
-此处因为 maxSession=2，所以需要打开 3 个浏览器（需要不同的浏览器，如 IE、Chrome、Firefox），分别访问 [http://localhost:8080/chapter18/](http://localhost:8080/chapter18/) 进行登录；然后刷新第一次打开的浏览器，将会被强制退出，如显示下图：
+此处因为 maxSession=2，所以需要打开 3 个浏览器（需要不同的浏览器，如 IE、Chrome、Firefox），分别访问 `http://localhost:8080/chapter18/` 进行登录；然后刷新第一次打开的浏览器，将会被强制退出，如显示下图：
 
 ![](images/28.png)
 

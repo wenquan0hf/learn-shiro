@@ -1,4 +1,4 @@
-# 9. JSP 标签
+# JSP 标签
 
 Shiro 提供了 JSTL 标签用于在 JSP/GSP 页面进行权限控制，如根据登录用户显示相应的页面按钮。
 
@@ -50,7 +50,7 @@ guest 标签
 
 **principal 标签**
 
-<shiro: principal/>  
+`<shiro: principal/> ` 
 
 显示用户身份信息，默认调用 Subject.getPrincipal() 获取，即 Primary Principal。  
 

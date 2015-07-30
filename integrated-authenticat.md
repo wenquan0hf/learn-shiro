@@ -1,4 +1,4 @@
-# 22. 集成验证码
+# 集成验证码
 
 在做用户登录功能时，很多时候都需要验证码支持，验证码的目的是为了防止机器人模拟真实用户登录而恶意访问，如暴力破解用户密码 / 恶意评论等。目前也有一些验证码比较简单，通过一些 OCR 工具就可以解析出来；另外还有一些验证码比较复杂（一般通过如扭曲、加线条 / 噪点等干扰）防止 OCR 工具识别；但是在中国就是人多，机器干不了的可以交给人来完成，所以在中国就有很多打码平台，人工识别验证码；因此即使比较复杂的如填字、算数等类型的验证码还是能识别的。所以验证码也不是绝对可靠的，目前比较可靠还是手机验证码，但是对于用户来说相对于验证码还是比较麻烦的。
  
@@ -25,7 +25,7 @@
 </dependency>&nbsp;
 ```
 
-com.octo.captcha . jcaptcha 提供了 jcaptcha 核心；而 jcaptcha-integration-simple-servlet 提供了与 Servlet 集成。  
+com.octo.captcha.jcaptcha 提供了 jcaptcha 核心；而 jcaptcha-integration-simple-servlet 提供了与 Servlet 集成。  
 
 **二、GMailEngine**
 
@@ -134,7 +134,7 @@ CaptchaService 使用当前会话 ID 当作 key 获取相应的验证码图片�
 </filter-mapping>&nbsp;
 ```
 
-这样就可以在页面使用 / jcaptcha.jpg 地址显示验证码图片。  
+这样就可以在页面使用 /jcaptcha.jpg 地址显示验证码图片。  
 
 **六、JCaptchaValidateFilter**
 
@@ -245,7 +245,7 @@ src="${pageContext.request.contextPath}/jcaptcha.jpg" title="点击更换验证�
 
 **十、测试**
 
-输入 [http://localhost:8080/chapter22](http://localhost:8080/chapter22) 将重定向到登录页面；输入正确的用户名 / 密码 / 验证码即可成功登录，如果输入错误的验证码，将显示验证码错误页面：  
+输入 `http://localhost:8080/chapter22` 将重定向到登录页面；输入正确的用户名 / 密码 / 验证码即可成功登录，如果输入错误的验证码，将显示验证码错误页面：  
 
 ![](images/33.png)
 

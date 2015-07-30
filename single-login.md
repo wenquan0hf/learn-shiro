@@ -1,13 +1,13 @@
-# 15. 单点登录
+# 单点登录
 
 Shiro 1.2 开始提供了 Jasig CAS 单点登录的支持，单点登录主要用于多系统集成，即在多个系统中，用户只需要到一个中央服务器登录一次即可访问这些系统中的任何一个，无须多次登录。此处我们使用 Jasig CAS v4.0.0-RC3 版本：  
 [https://github.com/Jasig/cas/tree/v4.0.0-RC3](https://github.com/Jasig/cas/tree/v4.0.0-RC3)  
 
 Jasig CAS 单点登录系统分为服务器端和客户端，服务器端提供单点登录，多个客户端（子系统）将跳转到该服务器进行登录验证，大体流程如下：  
 
-1. 访问客户端需要登录的页面 http://localhost:9080/ client/，此时会跳到单点登录服务器 https://localhost:8443/ server/login?service=https://localhost:9443/ client/cas；
+1. 访问客户端需要登录的页面 `http://localhost:9080/client/`，此时会跳到单点登录服务器 `https://localhost:8443/server/login?service=https://localhost:9443/client/cas`；
 2. 如果此时单点登录服务器也没有登录的话，会显示登录表单页面，输入用户名 / 密码进行登录；
-3. 登录成功后服务器端会回调客户端传入的地址：https://localhost:9443/client/cas?ticket=ST-1-eh2cIo92F9syvoMs5DOg-cas01.example.org，且带着一个 ticket；
+3. 登录成功后服务器端会回调客户端传入的地址：`https://localhost:9443/client/cas?ticket=ST-1-eh2cIo92F9syvoMs5DOg-cas01.example.org`，且带着一个 ticket；
 4. 客户端会把 ticket 提交给服务器来验证 ticket 是否有效；如果有效服务器端将返回用户身份；
 5. 客户端可以再根据这个用户身份获取如当前系统用户 / 角色 / 权限信息。
  
@@ -15,7 +15,7 @@ Jasig CAS 单点登录系统分为服务器端和客户端，服务器端提供�
 
 ## 服务器端  
 
-我们使用了 Jasig CAS 服务器 v4.0.0-RC3 版本，可以到其官方的 github 下载：https://github.com/Jasig/cas/tree/v4.0.0-RC3 下载，然后将其 cas-server-webapp 模块封装到 shiro-example-chapter15-server 模块中，具体请参考源码。
+我们使用了 Jasig CAS 服务器 v4.0.0-RC3 版本，可以到其官方的 github 下载：`https://github.com/Jasig/cas/tree/v4.0.0-RC3` 下载，然后将其 cas-server-webapp 模块封装到 shiro-example-chapter15-server 模块中，具体请参考源码。
 
 1、数字证书使用和《第十四章 SSL》一样的数字证书，即将 localhost.keystore 拷贝到 shiro-example-chapter15-server 模块根目录下；
  
@@ -45,14 +45,14 @@ Jasig CAS 单点登录系统分为服务器端和客户端，服务器端提供�
 </plugin>
 ```
 
-3、修改 src/main/webapp/WEB-INF/deployerConfigContext.xml，找到 primaryAuthenticationHandler，然后添加一个账户：  
+3、修改 `src/main/webapp/WEB-INF/deployerConfigContext.xml`，找到 primaryAuthenticationHandler，然后添加一个账户：  
 
 `<entry key="zhang" value="123"/>`
 
 其也支持如 JDBC 查询，可以自己定制；具体请参考文档。  
 
 4、mvn jetty:run 启动服务器测试即可：  
-访问 https://localhost:8443/chapter15-server/login 将弹出如下登录页面：  
+访问 `https://localhost:8443/chapter15-server/login` 将弹出如下登录页面：  
 
 ![](images/17.png)
 
@@ -64,7 +64,7 @@ Jasig CAS 单点登录系统分为服务器端和客户端，服务器端提供�
 
 ## 客户端  
 
-1、首先使用 localhost.keystore 导出数字证书（公钥）到 D:\localhost.cer  
+1、首先使用 localhost.keystore 导出数字证书（公钥）到 `D:\localhost.cer`  
 
 `keytool -export -alias localhost -file D:\localhost.cer -keystore D:\localhost.keystore&nbsp;`
 
@@ -162,13 +162,14 @@ CasFilter 类似于 FormAuthenticationFilter，只不过其验证服务器端返
 </bean>&nbsp;
 ```
 
-loginUrl：https://localhost:8443/chapter15-server/login 表示服务端端登录地址，登录成功后跳转到?service 参数对于的地址进行客户端验证及登录；  
+`loginUrl：https://localhost:8443/chapter15-server/login` 表示服务端端登录地址，登录成功后跳转到?service 参数对于的地址进行客户端验证及登录；  
 “/cas=cas”：即 /cas 地址是服务器端回调地址，使用 CasFilter 获取 Ticket 进行登录。  
 
-7、测试，输入 http://localhost:9080/chapter15-client 地址进行测试即可，可以使用如 Chrome 开这 debug 观察网络请求的变化。  
+7、测试，输入 `http://localhost:9080/chapter15-client` 地址进行测试即可，可以使用如 Chrome 开这 debug 观察网络请求的变化。  
 
 如果遇到以下异常，一般是证书导入错误造成的，请尝试重新导入，如果还是不行，有可能是运行应用的 JDK 和安装数字证书的 JDK 不是同一个造成的：  
 
+```
 Caused by:   sun.security.validator.ValidatorException: PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target  
 
 at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:385)
@@ -187,3 +188,4 @@ at java.security.cert.CertPathBuilder.build(CertPathBuilder.java:268)
 at sun.security.validator.PKIXValidator.doBuild(PKIXValidator.java:380)
 ... 73 more
 
+```

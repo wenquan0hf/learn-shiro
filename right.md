@@ -1,4 +1,4 @@
-# 3. 授权
+# 授权
 
 授权，也叫访问控制，即在应用中控制谁能访问哪些资源（如访问页面/编辑数据/页面操作等）。在授权中需了解的几个关键对象：主体（Subject）、资源（Resource）、权限（Permission）、角色（Role）。  
 
@@ -29,7 +29,7 @@ Shiro 支持粗粒度权限（如用户模块的所有权限）和细粒度权�
 
 请 google 搜索“RBAC”和“RBAC新解”分别了解“基于角色的访问控制”“基于资源的访问控制(Resource-Based Access Control)”。
 
-##3.1 授权方式
+## 授权方式
 
 Shiro 支持三种方式的授权：  
  
@@ -52,6 +52,7 @@ public void hello() {
     //有权限
 }&nbsp;
 ```
+
 没有权限将抛出相应的异常；
 
 JSP/GSP 标签：在 JSP/GSP 页面通过相应的标签完成： 
@@ -64,7 +65,7 @@ JSP/GSP 标签：在 JSP/GSP 页面通过相应的标签完成：
 
 后续部分将详细介绍如何使用。
 
-## 3.2 授权
+## 授权
 
 **基于角色的访问控制（隐式角色）**
 
@@ -162,7 +163,7 @@ Shiro 提供了 isPermitted 和 isPermittedAll 用于判断用户是否拥有某
 
 到此基于资源的访问控制（显示角色）就完成了，也可以叫基于权限的访问控制，这种方式的一般规则是“资源标识符：操作”，即是资源级别的粒度；这种方式的好处就是如果要修改基本都是一个资源级别的修改，不会对其他模块代码产生影响，粒度小。但是实现起来可能稍微复杂点，需要维护“用户——角色，角色——权限（资源：操作）”之间的关系。   
 
-## 3.3 Permission  
+## Permission  
 
 ### 字符串通配符权限  
 
@@ -237,7 +238,7 @@ ini 配置
 
 **5、实例级别的权限**
 
-- 5.1.单个实例单个权限
+- 单个实例单个权限
 
 ini 配置
 
@@ -249,7 +250,7 @@ ini 配置
 
 `subject().checkPermissions("user:view:1");`
 
-- 5.2.单个实例多个权限
+- 单个实例多个权限
 
 ini 配置  
 
@@ -264,7 +265,7 @@ subject().checkPermissions("user:delete,update:1");
 subject().checkPermissions("user:update:1", "user:delete:1");&nbsp;
 ```
 
-- 5.3.单个实例所有权限
+- 单个实例所有权限
 
 ini 配置
 
@@ -276,7 +277,7 @@ ini 配置
 
 `subject().checkPermissions("user:update:1", "user:delete:1", "user:view:1");`
 
-- 5.4.所有实例单个权限 
+- 所有实例单个权限 
 
 ini 配置
 
@@ -288,7 +289,7 @@ ini 配置
 
 `subject().checkPermissions("user:auth:1", "user:auth:2");`
 
-- 5.5.所有实例所有权限
+- 所有实例所有权限
 
 ini 配置
 
@@ -302,9 +303,9 @@ ini 配置
 
 **6、Shiro 对权限字符串缺失部分的处理**
 
-如“user:view”等价于“user:view:\*”；而“organization”等价于“organization:\*”或者“organization:\*:\*”。可以这么理解，这种方式实现了前缀匹配。  
+如“user:view”等价于“`user:view:*`”；而“organization”等价于“`organization:*`”或者“`organization:*:*`”。可以这么理解，这种方式实现了前缀匹配。  
 
-另外如“user:*”可以匹配如“user:delete”、“user:delete”可以匹配如“user:delete:1”、“user:\*:1”可以匹配如“user:view:1”、“user”可以匹配“user:view”或“user:view:1”等。即\*可以匹配所有，不加\*可以进行前缀匹配；但是如“\*:view”不能匹配“system:user:view”，需要使用“\*:\*:view”，即后缀匹配必须指定前缀（多个冒号就需要多个*来匹配）。  
+另外如“`user:*`”可以匹配如“`user:delete`”、“`user:delete`”可以匹配如“`user:delete:1`”、“`user:*:1`”可以匹配如“user:view:1”、“user”可以匹配“`user:view`”或“`user:view:1`”等。即`*`可以匹配所有，不加`*`可以进行前缀匹配；但是如“`*:view`”不能匹配“`system:user:view`”，需要使用“`*:*:view`”，即后缀匹配必须指定前缀（多个冒号就需要多个`*`来匹配）。  
 
 **7、WildcardPermission**
 
@@ -321,30 +322,30 @@ subject().checkPermission(new WildcardPermission("menu:view:1"));&nbsp;
 
 通配符匹配方式比字符串相等匹配来说是更复杂的，因此需要花费更长时间，但是一般系统的权限不会太多，且可以配合缓存来提供其性能，如果这样性能还达不到要求我们可以实现位操作算法实现性能更好的权限匹配。另外实例级别的权限验证如果数据量太大也不建议使用，可能造成查询权限及匹配变慢。可以考虑比如在sql查询时加上权限字符串之类的方式在查询时就完成了权限匹配。
 
-## 3.4 授权流程
+## 授权流程
 
 ![](images/6.png)
 
 流程如下：  
 
-1. 首先调用 Subject.isPermitted*/hasRole*接口，其会委托给 SecurityManager，而 SecurityManager 接着会委托给 Authorizer；
+1. 首先调用 `Subject.isPermitted*/hasRole*`接口，其会委托给 SecurityManager，而 SecurityManager 接着会委托给 Authorizer；
 2. Authorizer 是真正的授权者，如果我们调用如 isPermitted(“user:view”)，其首先会通过 PermissionResolver 把字符串转换成相应的 Permission 实例；
 3. 在进行授权之前，其会调用相应的 Realm 获取 Subject 相应的角色/权限用于匹配传入的角色/权限；
-4. Authorizer 会判断 Realm 的角色/权限是否和传入的匹配，如果有多个 Realm，会委托给 ModularRealmAuthorizer 进行循环判断，如果匹配如 isPermitted*/hasRole* 会返回 true，否则返回 false 表示授权失败。
+4. Authorizer 会判断 Realm 的角色/权限是否和传入的匹配，如果有多个 Realm，会委托给 ModularRealmAuthorizer 进行循环判断，如果匹配如 `isPermitted*/hasRole*` 会返回 true，否则返回 false 表示授权失败。
 
 ModularRealmAuthorizer 进行多 Realm 匹配流程：
 
-1. 首先检查相应的 Realm 是否实现了实现了 Authorizer；
-2. 如果实现了 Authorizer，那么接着调用其相应的 isPermitted*/hasRole* 接口进行匹配；
-3. 如果有一个 Realm 匹配那么将返回 true，否则返回 false。
+- 首先检查相应的 Realm 是否实现了实现了 Authorizer；
+- 如果实现了 Authorizer，那么接着调用其相应的 `isPermitted*/hasRole*` 接口进行匹配；
+- 如果有一个 Realm 匹配那么将返回 true，否则返回 false。
 
 如果 Realm 进行授权的话，应该继承 AuthorizingRealm，其流程是：  
 
-1. 如果调用 hasRole*，则直接获取 AuthorizationInfo.getRoles() 与传入的角色比较即可；首先如果调用如 isPermitted(“user:view”)，首先通过 PermissionResolver 将权限字符串转换成相应的 Permission 实例，默认使用 WildcardPermissionResolver，即转换为通配符的 WildcardPermission；  
-2. 通过 AuthorizationInfo.getObjectPermissions() 得到 Permission 实例集合；通过 AuthorizationInfo.getStringPermissions() 得到字符串集合并通过 PermissionResolver 解析为 Permission 实例；然后获取用户的角色，并通过 RolePermissionResolver 解析角色对应的权限集合（默认没有实现，可以自己提供）；  
-3. 接着调用 Permission.implies(Permission p) 逐个与传入的权限比较，如果有匹配的则返回 true，否则 false。
+- 如果调用 `hasRole*`，则直接获取 AuthorizationInfo.getRoles() 与传入的角色比较即可；首先如果调用如 isPermitted(“user:view”)，首先通过 PermissionResolver 将权限字符串转换成相应的 Permission 实例，默认使用 WildcardPermissionResolver，即转换为通配符的 WildcardPermission；  
+- 通过 AuthorizationInfo.getObjectPermissions() 得到 Permission 实例集合；通过 AuthorizationInfo.getStringPermissions() 得到字符串集合并通过 PermissionResolver 解析为 Permission 实例；然后获取用户的角色，并通过 RolePermissionResolver 解析角色对应的权限集合（默认没有实现，可以自己提供）；  
+- 接着调用 Permission.implies(Permission p) 逐个与传入的权限比较，如果有匹配的则返回 true，否则 false。
 
-## 3.5 Authorizer、PermissionResolver及RolePermissionResolver
+## Authorizer、PermissionResolver及RolePermissionResolver
 
 Authorizer 的职责是进行授权（访问控制），是 Shiro API 中授权核心的入口点，其提供了相应的角色/权限判断接口，具体请参考其 Javadoc。SecurityManager 继承了 Authorizer 接口，且提供了 ModularRealmAuthorizer 用于多 Realm 时的授权匹配。PermissionResolver 用于解析权限字符串到 Permission 实例，而 RolePermissionResolver 用于根据角色解析相应的权限集合。
 
@@ -478,7 +479,7 @@ public class MyRolePermissionResolver implements RolePermissionResolver {
 }&nbsp;
 ```
 
-此处的实现很简单，如果用户拥有 role1，那么就返回一个 “menu:*” 的权限。  
+此处的实现很简单，如果用户拥有 role1，那么就返回一个 “`menu:*`” 的权限。  
 
 **4、自定义 Realm**
 

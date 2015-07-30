@@ -1,4 +1,4 @@
-# 23. 多项目集中权限管理及分布式会话
+# 多项目集中权限管理及分布式会话
 
 在做一些企业内部项目时或一些互联网后台时；可能会涉及到集中权限管理，统一进行多项目的权限管理；另外也需要统一的会话管理，即实现单点身份认证和授权控制。
  
@@ -36,9 +36,9 @@ server {
 }&nbsp;
 ```
 
-如访问 [http://localhost/chapter23-server](http://localhost/chapter23-server) 会自动转发到 [http://localhost:8080/chapter23-server](http://localhost:8080/chapter23-server)；  
-访问 [http://localhost/chapter23-app1](http://localhost/chapter23-app1) 会自动转发到 [http://localhost:9080/chapter23-app1](http://localhost:9080/chapter23-app1)；  
-访问 [http://localhost/chapter23-app3](http://localhost/chapter23-app3) 会自动转发到 [http://localhost:10080/chapter23-app3](http://localhost:10080/chapter23-app3)；  
+如访问 `http://localhost/chapter23-server` 会自动转发到 `http://localhost:8080/chapter23-server`；  
+访问 `http://localhost/chapter23-app1` 会自动转发到 `http://localhost:9080/chapter23-app1`；  
+访问 `http://localhost/chapter23-app3` 会自动转发到 `http://localhost:10080/chapter23-app3`；  
  
 Nginx 的安装及使用请自行搜索学习，本文不再阐述。 
 
@@ -71,13 +71,13 @@ Nginx 的安装及使用请自行搜索学习，本文不再阐述。
 </parent>
 ```
 
-2、shiro-example-chapter23-core 模块：提供给 shiro-example-chapter23-server、shiro-example-chapter23-client、shiro-example-chapter23-app * 模块的核心依赖，比如远程调用接口等；
+2、shiro-example-chapter23-core 模块：提供给 shiro-example-chapter23-server、shiro-example-chapter23-client、`shiro-example-chapter23-app *` 模块的核心依赖，比如远程调用接口等；
   
 3、shiro-example-chapter23-server 模块：提供了用户、应用、权限管理功能；
  
 4、shiro-example-chapter23-client 模块：提供给应用模块获取会话及应用对应的权限信息；
  
-5、shiro-example-chapter23-app * 模块：各个子应用，如一些内部管理系统应用；其登录都跳到 shiro-example-chapter23-server 登录；另外权限都从 shiro-example-chapter23-server 获取（如通过远程调用）。  
+5、`shiro-example-chapter23-app *` 模块：各个子应用，如一些内部管理系统应用；其登录都跳到 shiro-example-chapter23-server 登录；另外权限都从 shiro-example-chapter23-server 获取（如通过远程调用）。  
 
 ## shiro-example-chapter23-pom 模块
  
@@ -109,7 +109,7 @@ public interface RemoteServiceInterface {
 
 提供了会话的 CRUD，及根据应用 key 和用户名获取权限上下文（包括角色和权限字符串）；shiro-example-chapter23-server 模块服务端实现；shiro-example-chapter23-client 模块客户端调用。  
  
-另外提供了 com.github.zhangkaitao.shiro.chapter23.core.ClientSavedRequest，其扩展了 org.apache.shiro.web.util.SavedRequest；用于 shiro-example-chapter23-app * 模块当访问一些需要登录的请求时，自动把请求保存下来，然后重定向到 shiro-example-chapter23-server 模块登录；登录成功后再重定向回来；因为 SavedRequest 不保存 URL 中的 [schema://domain:port]() 部分；所以才需要扩展 SavedRequest；使得 ClientSavedRequest 能保存 [schema://domain:port]()；这样才能从一个应用重定向另一个（要不然只能在一个应用内重定向）：
+另外提供了 com.github.zhangkaitao.shiro.chapter23.core.ClientSavedRequest，其扩展了 org.apache.shiro.web.util.SavedRequest；用于 shiro-example-chapter23-app * 模块当访问一些需要登录的请求时，自动把请求保存下来，然后重定向到 shiro-example-chapter23-server 模块登录；登录成功后再重定向回来；因为 SavedRequest 不保存 URL 中的 `schema://domain:port` 部分；所以才需要扩展 SavedRequest；使得 ClientSavedRequest 能保存 `schema://domain:port`；这样才能从一个应用重定向另一个（要不然只能在一个应用内重定向）：
 
 ```
     public String getRequestUrl() {
@@ -143,7 +143,7 @@ public interface RemoteServiceInterface {
 &nbsp;
 ```
 
-1. 如果从外部传入了 successUrl（登录成功之后重定向的地址），且以 http:// 或 https:// 开头那么直接返回（相应的拦截器直接重定向到它即可）；
+1. 如果从外部传入了 successUrl（登录成功之后重定向的地址），且以 `http://` 或 `https://` 开头那么直接返回（相应的拦截器直接重定向到它即可）；
 2. 如果 successUrl 有值但没有上下文，拼上上下文；
 3. 否则，如果 successUrl 有值，直接赋值给 requestUrl 即可；否则，如果 successUrl 没值，那么 requestUrl 就是当前请求的地址；
 4. 拼上 url 前边的 schema，如 http 或 https；
@@ -161,7 +161,8 @@ public interface RemoteServiceInterface {
 **简单数据字典**
 
 用户 (sys_user) 
-<table border="1" style="border-collapse: collapse; border: none;" class="MsoNormalTable" cellpadding="0" cellspacing="0">
+
+<table>
 <tbody><tr>
 <td>
 <p class="MsoNormal">名称</p>
@@ -249,7 +250,8 @@ public interface RemoteServiceInterface {
 </tbody></table>
  
 应用 (sys_app)
-<table border="1" style="border-collapse: collapse; border: none;" class="MsoNormalTable" cellpadding="0" cellspacing="0">
+
+<table>
 <tbody><tr>
 <td >
 <p class="MsoNormal">名称</p>
@@ -337,7 +339,8 @@ public interface RemoteServiceInterface {
 </tbody></table>
 
 授权 (sys_authorization)
-<table border="1" style="border-collapse: collapse; border: none;" class="MsoNormalTable" cellpadding="0" cellspacing="0">
+
+<table>
 <tbody><tr>
 <td>
 <p class="MsoNormal">名称</p>
@@ -421,8 +424,9 @@ public interface RemoteServiceInterface {
 **表 / 数据 SQL**
 
 具体请参考
-sql/ shiro-schema.sql （表结构）  
-sql/ shiro-data.sql  （初始数据）  
+
+- sql/shiro-schema.sql （表结构）  
+- sql/shiro-data.sql  （初始数据）  
  
 **实体**
 
@@ -802,7 +806,7 @@ class="com.github.zhangkaitao.shiro.chapter23.client.ClientAuthenticationFilter"
 
 ShiroFilter 使用我们自定义的 ClientShiroFilterFactoryBean，然后 loginUrl（登录地址）、successUrl（登录成功后默认的重定向地址）、unauthorizedUrl（未授权重定向到的地址）通过占位符替换方式配置；另外 filtersStr 和 filterChainDefinitionsStr 也是使用占位符替换方式配置；这样就可以在各应用进行自定义了。
  
-**默认配置 client/ shiro-client-default.properties**
+**默认配置 client/shiro-client-default.properties**
 
 ```
 \#各应用的appKey
@@ -950,7 +954,7 @@ shiro-example-chapter23-app2 的控制器类似，role2 方法使用 @RequiresRo
 
 **1、安装配置启动 nginx** 
  
-1、首先到 http://nginx.org/en/download.html 下载，比如我下载的是 windows 版本的；
+1、首先到 `http://nginx.org/en/download.html` 下载，比如我下载的是 windows 版本的；
  
 2、然后编辑 conf/nginx.conf 配置文件，在 server 部分添加如下部分：
 
@@ -984,15 +988,15 @@ shiro-example-chapter23-app2 的控制器类似，role2 方法使用 @RequiresRo
 
 **3、启动 Server 模块**
 
-到 shiro-example-chapter23-server 模块下运行 mvn jetty:run 启动该模块；使用 [http://localhost:8080/chapter23-server/](http://localhost:8080/chapter23-server/) 即可访问，因为启动了 nginx，那么可以直接访问 [http://localhost/chapter23-server/](http://localhost/chapter23-server/)。
+到 shiro-example-chapter23-server 模块下运行 mvn jetty:run 启动该模块；使用 `http://localhost:8080/chapter23-server/` 即可访问，因为启动了 nginx，那么可以直接访问 `http://localhost/chapter23-server/`。
 
 **4、启动 App\* 模块**
 
-到 shiro-example-chapter23-app1 和 shiro-example-chapter23-app2 模块下分别运行 mvn jetty:run 启动该模块；使用 [http://localhost:9080/chapter23-app1/]() 和 [http://localhost:10080/chapter23-app2/]() 即可访问，因为启动了 nginx，那么可以直接访问 [http://localhost/chapter23-app1/](http://localhost/chapter23-app1/) 和 [http://localhost/chapter23-app2/](http://localhost/chapter23-app2/)。
+到 shiro-example-chapter23-app1 和 shiro-example-chapter23-app2 模块下分别运行 mvn jetty:run 启动该模块；使用 `http://localhost:9080/chapter23-app1/` 和 `http://localhost:10080/chapter23-app2/` 即可访问，因为启动了 nginx，那么可以直接访问 `http://localhost/chapter23-app1/` 和 `http://localhost/chapter23-app2/`。
 
 **5、服务器端维护**
 
-1、访问 http://localhost/chapter23-server/；
+1、访问 `http://localhost/chapter23-server/`；
 
 2、输入默认的用户名密码：admin/123456 登录
 
@@ -1008,21 +1012,21 @@ shiro-example-chapter23-app2 的控制器类似，role2 方法使用 @RequiresRo
 
 **6、App* 模块身份认证及授权**
 
-1、在未登录情况下访问 [http://localhost/chapter23-app1/hello](http://localhost/chapter23-app1/hello)，看到下图：
+1、在未登录情况下访问 `http://localhost/chapter23-app1/hello`，看到下图：
 
 ![](images/46.png)
 
-2、登录地址是 [http://localhost/chapter23-app1/login?backUrl=/chapter23-app1](http://localhost/chapter23-app1/login?backUrl=/chapter23-app1)，即登录成功后重定向回 [http://localhost/chapter23-app1](http://localhost/chapter23-app1)（这是个错误地址，为了测试登录成功后重定向地址），点击登录按钮后重定向到 Server 模块的登录界面：
+2、登录地址是 `http://localhost/chapter23-app1/login?backUrl=/chapter23-app1`，即登录成功后重定向回 `http://localhost/chapter23-app1`（这是个错误地址，为了测试登录成功后重定向地址），点击登录按钮后重定向到 Server 模块的登录界面：
 
 ![](images/47.png)
 
-3、登录成功后，会重定向到相应的登录成功地址；接着访问 [http://localhost/chapter23-app1/hello](http://localhost/chapter23-app1/hello)，看到如下图：  
+3、登录成功后，会重定向到相应的登录成功地址；接着访问 `http://localhost/chapter23-app1/hello`，看到如下图：  
 
 ![](images/48.png)
 
 4、可以看到 admin 登录，及其是否拥有 role1/role2 角色；可以在 server 模块移除 role1 角色或添加 role2 角色看看页面变化；
  
-5、可以在 [http://localhost/chapter23-app1/hello](http://localhost/chapter23-app1/hello) 页面设置属性，如 key=123；接着访问 [http://localhost/chapter23-app2/attr?key=key](http://localhost/chapter23-app2/attr?key=key) 就可以看到刚才设置的属性，如下图：
+5、可以在 `http://localhost/chapter23-app1/hello` 页面设置属性，如 key=123；接着访问 `http://localhost/chapter23-app2/attr?key=key` 就可以看到刚才设置的属性，如下图：
 
 ![](images/49.png)
 
