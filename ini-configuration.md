@@ -1,4 +1,4 @@
-# 4. INI配置
+# INI 配置
 
 之前章节我们已经接触过一些 INI 配置规则了，如果大家使用过如 Spring 之类的 IoC/DI 容器的话，Shiro 提供的 INI 配置也是非常类似的，即可以理解为是一个 IoC/DI 容器，但是区别在于它从一个根对象 securityManager 开始。  
 
